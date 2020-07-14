@@ -45,7 +45,6 @@ def primeFormatToTaxonomic():
 				speciesToWeights[species].append(float(df.at[index, 'Weights']))
 			index+=1
 		
-		#print(df['Microbes'])
 		#Find which species were not present in a given file 
 		for key in speciesToWeights:
 			if len(speciesToWeights[key]) < numberOfLoops: #If a given key-value pair is not the expected length for this iteration
@@ -54,10 +53,17 @@ def primeFormatToTaxonomic():
 		numberOfLoops+=1
 		index = 0
 
-	print(speciesToWeights)
+	#print(speciesToWeights)
 	#Create dataframe from the species : weights dictionary
 	finalDf = pd.DataFrame.from_dict(speciesToWeights)
+
+	#Change headers
+	newHeaders = [key for key in speciesToWeights]
+	for count in range(len(newHeaders)):
+		newHeaders[count] = newHeaders[count].split('s__', 1)[1]
+	finalDf.columns = [newHeaders]
+
 	return finalDf
 
 finalDf = primeFormatToTaxonomic()
-#finalDf.to_csv('results.csv')
+finalDf.to_csv('results.csv')
