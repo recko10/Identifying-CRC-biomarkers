@@ -27,6 +27,7 @@ def primeFormatToTaxonomic():
 					speciesToWeights[species] = []
 	
 	numberOfLoops = 1
+
 	#Append weights to dictionary
 	for file in os.listdir(directory):
 		
@@ -45,13 +46,11 @@ def primeFormatToTaxonomic():
 			index+=1
 		
 		#print(df['Microbes'])
-		#Find which species were not present in a given file and store them in a list
+		#Find which species were not present in a given file 
 		for key in speciesToWeights:
-			if len(speciesToWeights[key]) < numberOfLoops:
+			if len(speciesToWeights[key]) < numberOfLoops: #If a given key-value pair is not the expected length for this iteration
 				speciesToWeights[key].append(0) #Append 0s to species who were not present in a given file
 
-		if numberOfLoops == len(os.listdir(directory)):
-			break
 		numberOfLoops+=1
 		index = 0
 
@@ -62,4 +61,3 @@ def primeFormatToTaxonomic():
 
 finalDf = primeFormatToTaxonomic()
 #finalDf.to_csv('results.csv')
-##BUG: Make sure to add 0 to the unaffected keys to make all the columns the same size
