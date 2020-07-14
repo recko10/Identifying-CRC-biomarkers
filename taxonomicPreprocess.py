@@ -53,7 +53,8 @@ def primeFormatToTaxonomic():
 		numberOfLoops+=1
 		index = 0
 
-	#print(speciesToWeights)
+	
+	
 	#Create dataframe from the species : weights dictionary
 	finalDf = pd.DataFrame.from_dict(speciesToWeights)
 
@@ -62,6 +63,13 @@ def primeFormatToTaxonomic():
 	for count in range(len(newHeaders)):
 		newHeaders[count] = newHeaders[count].split('s__', 1)[1]
 	finalDf.columns = [newHeaders]
+
+	#Change indices
+	sampleNames = os.listdir(directory)
+	sampleNames.pop(0)
+	for count in range(len(sampleNames)):
+		sampleNames[count] = sampleNames[count].split('_bugs',1)[0]
+	finalDf.index=sampleNames
 
 	return finalDf
 
