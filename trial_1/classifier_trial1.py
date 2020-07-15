@@ -63,24 +63,37 @@ def logisticRegeression(X_train, X_test, y_train, y_test):
 
 	print(accuracy_score(y_test,y_pred))
 
-
-#Preprocess dataset to predict on
-
-predictFeaturesDf = pd.read_csv('predict_abundances.csv')
-predictFeaturesDf = predictFeaturesDf.T
-
-newColumns = []
-for index in range(1753):
-	newColumns.append(predictFeaturesDf.at['Unnamed: 0', index])
-
-predictFeaturesDf = predictFeaturesDf.drop('Unnamed: 0',axis=0)
-newColumns = [x.split('[',1)[0] for x in newColumns]
-predictFeaturesDf.columns = newColumns
+#kneighbors(X_train, X_test, y_train, y_test)
+#logisticRegeression(X_train, X_test, y_train, y_test)
 
 
-#Preprocess metadata for dataset to predict on
-predictTargetsDf = pd.read_csv('predict_metadata.csv')
-truePred = 
+# #Preprocess dataset to predict on
+
+# predictFeaturesDf = pd.read_csv('predict_abundances.csv')
+# predictFeaturesDf = predictFeaturesDf.T
+
+# newColumns = []
+# for index in range(1753):
+# 	newColumns.append(predictFeaturesDf.at['Unnamed: 0', index])
+
+# predictFeaturesDf = predictFeaturesDf.drop('Unnamed: 0',axis=0)
+# newColumns = [x.split('[',1)[0] for x in newColumns]
+# predictFeaturesDf.columns = newColumns
+
+
+# #Preprocess metadata for dataset to predict on
+# predictTargetsDf = pd.read_csv('predict_metadata.csv')
+
+# #Remove samples with no metadata and samples with metadata not regarding cancer or normal
+# index=0
+# for entry in predictTargetsDf['Alias']:
+# 	if entry not in predictFeaturesDf.index.tolist() or predictTargetsDf.at[index,'diagnosis'] == '' or (predictTargetsDf.at[index,'diagnosis'] != 'Normal' and predictTargetsDf.at[index,'diagnosis'] != 'Cancer'):
+# 		predictTargetsDf = predictTargetsDf.drop(index, axis=0)
+# 	index+=1
+
+# #Change 'Cancer' to CRC and normal to 'CTR'
+# for entry in predictTargetsDf['diagnosis']
+
 
 
 
