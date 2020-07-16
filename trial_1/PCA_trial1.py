@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 #Preprocess data
 featuresDf = pd.read_csv('taxonomic_abundances.csv') #Load in df
 
-indexList = [entry.split('[',1)[0] for entry in featuresDf['Unnamed: 0']] #List of bacteria names 
+#indexList = [entry.split('[',1)[0] for entry in featuresDf['Unnamed: 0']] #List of bacteria names 
+indexList = [entry for entry in featuresDf['Unnamed: 0']] #List of bacteria names 
 
 featuresDf.index = indexList #Change indices to values in this list
 featuresDf = featuresDf.drop(columns='Unnamed: 0') #Drop the column

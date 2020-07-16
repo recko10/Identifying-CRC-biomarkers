@@ -2,12 +2,14 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
+from sklearn.linear_model import *
 
 #Preprocess data
 featuresDf = pd.read_csv('taxonomic_abundances.csv') #Load in df
 
-indexList = [entry.split('[',1)[0] for entry in featuresDf['Unnamed: 0']] #List of bacteria names 
+#indexList = [entry.split('[',1)[0] for entry in featuresDf['Unnamed: 0']] #List of bacteria names 
+indexList = [entry for entry in featuresDf['Unnamed: 0']] #List of bacteria names 
 
 featuresDf.index = indexList #Change indices to values in this column
 featuresDf = featuresDf.drop(columns='Unnamed: 0') #Drop the column
@@ -37,9 +39,15 @@ X = featuresDf.drop(columns = 'Experiment')
 #Convert the metadata column into a list of labels
 Y = finalFeaturesDf['Experiment'].tolist()
 
-#Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33)
-
+#CONVERT ALL NUMBERS INTO 'yes' or 'no' values indicating the presence of the bacteria (yes is 1 and no is 0)
+#This method is a little slow, but it works
+def binaryData(X, threshold):
+	for column in X.columns.tolist():
+		for index in range(len(X)):
+			if X[column].iloc[index] < threshold:
+				X[column].iloc[index] = 0
+			else:
+				X[column].iloc[index] = 1
 
 def kneighbors(X_train, X_test, y_train, y_test):
 	#Initialize classifier
@@ -51,10 +59,11 @@ def kneighbors(X_train, X_test, y_train, y_test):
 	y_pred = kn.predict(X_test)
 
 	print(accuracy_score(y_test,y_pred))
+	print(confusion_matrix(y_test,y_pred))
 
 def logisticRegeression(X_train, X_test, y_train, y_test):
 	#Initialize classifier
-	logReg = LogisticRegression(C=10)
+	logReg = LogisticRegression(C=10, max_iter=200)
 	print(logReg)
 	logReg.fit(X_train, y_train)
 
@@ -62,10 +71,15 @@ def logisticRegeression(X_train, X_test, y_train, y_test):
 	y_pred = logReg.predict(X_test)
 
 	print(accuracy_score(y_test,y_pred))
+	print(confusion_matrix(y_test,y_pred))
+
+#Call methods and do final processing
+binaryData(X,0.001) #Make data binary (1 if above threshold 0 if below)
+
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
 
 #kneighbors(X_train, X_test, y_train, y_test)
-#logisticRegeression(X_train, X_test, y_train, y_test)
-
+logisticRegeression(X_train, X_test, y_train, y_test)
 
 # #Preprocess dataset to predict on
 
