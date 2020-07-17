@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.linear_model import *
+from sklearn.preprocessing import StandardScaler
 
 #Preprocess data
 featuresDf = pd.read_csv('taxonomic_abundances.csv') #Load in df
@@ -42,6 +43,7 @@ Y = finalFeaturesDf['Experiment'].tolist()
 #CONVERT ALL NUMBERS INTO 'yes' or 'no' values indicating the presence of the bacteria (yes is 1 and no is 0)
 #This method is a little slow, but it works
 def binaryData(X, threshold):
+	X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
 	for column in X.columns.tolist():
 		for index in range(len(X)):
 			if X[column].iloc[index] < threshold:
@@ -49,7 +51,11 @@ def binaryData(X, threshold):
 			else:
 				X[column].iloc[index] = 1
 
-def kneighbors(X_train, X_test, y_train, y_test):
+def kneighbors(X, Y):
+	X = StandardScaler().fit_transform(X) #Scale the data
+
+	X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
+
 	#Initialize classifier
 	kn = KNeighborsClassifier(n_neighbors=3)
 	print(kn)
@@ -61,7 +67,11 @@ def kneighbors(X_train, X_test, y_train, y_test):
 	print(accuracy_score(y_test,y_pred))
 	print(confusion_matrix(y_test,y_pred))
 
-def logisticRegeression(X_train, X_test, y_train, y_test):
+def logisticRegeression(X, Y):
+	X = StandardScaler().fit_transform(X) #Scale the data
+
+	X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
+
 	#Initialize classifier
 	logReg = LogisticRegression(C=10, max_iter=200)
 	print(logReg)
@@ -73,13 +83,125 @@ def logisticRegeression(X_train, X_test, y_train, y_test):
 	print(accuracy_score(y_test,y_pred))
 	print(confusion_matrix(y_test,y_pred))
 
+def lassoRegression(X, Y):
+	X = StandardScaler().fit_transform(X) #Scale the data
+
+	X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
+
+	#Make targets 1s and 0s
+	for index in range(len(y_train)):
+		if y_train[index] == 'CRC':
+			y_train[index] = 1
+		if y_train[index] == 'CTR':
+			y_train[index] = 0
+
+	#Make targets 1s and 0s
+	for index in range(len(y_test)):
+		if y_test[index] == 'CRC':
+			y_test[index] = 1
+		if y_test[index] == 'CTR':
+			y_test[index] = 0
+
+	print(y_test)
+	print(y_train)
+
+	lasso = Lasso()
+	print(lasso)
+	lasso.fit(X_train, y_train)
+
+	#Predict
+	y_pred = lasso.predict(X_test)
+
+	print(accuracy_score(y_test,y_pred.round()))
+	print(confusion_matrix(y_test,y_pred.round()))
+
+def LOSO(X,Y):
+
+	#Add targets back to features dataframe so that they can also be deleted when rows are left out
+	X['Experiment'] = Y
+
+	CCISList = [item for item in X.index.tolist() if 'CCIS' in item] #Get all rows with CCIS in the index
+	X_temp_1 = X.drop(CCISList, axis=0) #Feature training set
+	y_temp_1 = X_temp_1['Experiment'].tolist() #Target training set
+	X_temp_1 = X_temp_1.drop('Experiment',axis=1)
+
+	CCIS = X.iloc[0:114] 
+	CCIS_targets = CCIS['Experiment'] #Target prediction set
+	CCIS = CCIS.drop('Experiment', axis=1) #Feature prediction set
+
+	# CCMDList = [item for item in X.index.tolist() if 'CCMD' in item] #Get all rows with CCMD in the index
+	# X_temp_2 =  X.drop(CCMDList, axis=0)
+	# y_temp_2 = X_temp_2['Experiment'].tolist()
+	# CCMD = X.iloc[114:234]
+	# CCMD = CCMD.drop(['Experiment'], axis=1)
+
+	# ERRList = [item for item in X.index.tolist() if 'ERR' in item] #Get all rows with ERR in the index
+	# X_temp_3 = X.drop(ERRList, axis=0)
+	# y_temp_3 = X_temp_3['Experiment'].tolist()
+	# ERR = X.iloc[234:362]
+	# ERR = ERR.drop(['Experiment'], axis=1)
+
+	# MMRSList = [item for item in X.index.tolist() if 'MMRS' in item] #Get all rows with MMRS in the index
+	# X_temp_4 = X.drop(MMRSList, axis=0)
+	# y_temp_4 = X_temp_4['Experiment'].tolist()
+	# MMRS = X.iloc[362:466]
+	# MMRS = MMRS.drop(['Experiment'], axis=1)
+
+
+	# SAMEAList = [item for item in X.index.tolist() if 'SAMEA' in item] #Get all rows with SAMEA in the index
+	# X_temp_5 = X.drop(SAMEAList, axis=0)
+	# y_temp_5 = X_temp_5['Experiment'].tolist()
+	# SAMEA = X.iloc[466:575]
+	# SAMEA = SAMEA.drop(['Experiment'], axis=1)
+
+	#Scale the data
+	CCIS = StandardScaler().fit_transform(CCIS)
+	# CCMD = StandardScaler().fit_transform(CCMD)
+	# ERR = StandardScaler().fit_transform(ERR) 
+	# MMRS = StandardScaler().fit_transform(MMRS) 
+	# SAMEA = StandardScaler().fit_transform(SAMEA) 
+	
+	#Initialize classifier
+	logReg = LogisticRegression(C=10, max_iter=200)
+	print(logReg)
+	logReg.fit(X_temp_1, y_temp_1)
+
+	#Predict
+	y_pred = logReg.predict(CCIS)
+
+	print(accuracy_score(CCIS_targets,y_pred))
+	print(confusion_matrix(CCIS_targets,y_pred))
+
+
 #Call methods and do final processing
-binaryData(X,0.001) #Make data binary (1 if above threshold 0 if below)
+#binaryData(X,0.001) #Make features binary (1 if above threshold 0 if below)
 
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
+LOSO(X,Y)
 
-#kneighbors(X_train, X_test, y_train, y_test)
-logisticRegeression(X_train, X_test, y_train, y_test)
+#kneighbors(X, Y)
+#logisticRegeression(X,Y)
+#lassoRegression(X, Y)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # #Preprocess dataset to predict on
 
