@@ -57,7 +57,7 @@ def primeFormatToTaxonomic():
 	
 	#Create dataframe from the species : weights dictionary
 	finalDf = pd.DataFrame.from_dict(speciesToWeights)
-
+	
 	#Change headers
 	newHeaders = [key for key in speciesToWeights]
 	for count in range(len(newHeaders)):
