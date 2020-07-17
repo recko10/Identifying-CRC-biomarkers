@@ -5,6 +5,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.linear_model import *
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import roc_auc_score
 
 #Preprocess data
 featuresDf = pd.read_csv('taxonomic_abundances.csv') #Load in df
@@ -67,10 +68,26 @@ def kneighbors(X, Y):
 	print(accuracy_score(y_test,y_pred))
 	print(confusion_matrix(y_test,y_pred))
 
-def logisticRegeression(X, Y):
-	X = StandardScaler().fit_transform(X) #Scale the data
+def logisticRegeression(X, Y, loso=False, losoFeatureTrain = pd.DataFrame(['Empty']), losoTargetTrain = [], losoFeaturePredict = pd.DataFrame(['Empty']), losoTargetPredict = []):
+	if loso == False:
+		X = StandardScaler().fit_transform(X) #Scale the data
+		X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
 
-	X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
+	#If it is being called from the LOSO function
+	if loso == True:
+		#Initialize classifier
+		logReg = LogisticRegression(C=10, max_iter=200)
+		logReg.fit(losoFeatureTrain, losoTargetTrain)
+
+		#Predict
+		y_pred = logReg.predict(losoFeaturePredict)
+		y_pred_roc = logReg.decision_function(losoFeaturePredict)
+
+		#Print out accuracy metrics
+		print(f'Accuracy score: {accuracy_score(losoTargetPredict,y_pred)}')
+		print(f'Confusion matrix: {confusion_matrix(losoTargetPredict,y_pred)}')
+		print(f'AUROC score: {roc_auc_score(losoTargetPredict, y_pred_roc)}\n')
+		return
 
 	#Initialize classifier
 	logReg = LogisticRegression(C=10, max_iter=200)
@@ -85,7 +102,6 @@ def logisticRegeression(X, Y):
 
 def lassoRegression(X, Y):
 	X = StandardScaler().fit_transform(X) #Scale the data
-
 	X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
 
 	#Make targets 1s and 0s
@@ -115,11 +131,13 @@ def lassoRegression(X, Y):
 	print(accuracy_score(y_test,y_pred.round()))
 	print(confusion_matrix(y_test,y_pred.round()))
 
+#Leave-one-study-out validation
 def LOSO(X,Y):
 
 	#Add targets back to features dataframe so that they can also be deleted when rows are left out
 	X['Experiment'] = Y
 
+	#CCIS processing
 	CCISList = [item for item in X.index.tolist() if 'CCIS' in item] #Get all rows with CCIS in the index
 	X_temp_1 = X.drop(CCISList, axis=0) #Feature training set
 	y_temp_1 = X_temp_1['Experiment'].tolist() #Target training set
@@ -129,48 +147,59 @@ def LOSO(X,Y):
 	CCIS_targets = CCIS['Experiment'] #Target prediction set
 	CCIS = CCIS.drop('Experiment', axis=1) #Feature prediction set
 
-	# CCMDList = [item for item in X.index.tolist() if 'CCMD' in item] #Get all rows with CCMD in the index
-	# X_temp_2 =  X.drop(CCMDList, axis=0)
-	# y_temp_2 = X_temp_2['Experiment'].tolist()
-	# CCMD = X.iloc[114:234]
-	# CCMD = CCMD.drop(['Experiment'], axis=1)
+	#CCMD processing
+	CCMDList = [item for item in X.index.tolist() if 'CCMD' in item] #Get all rows with CCMD in the index
+	X_temp_2 = X.drop(CCMDList, axis=0) #Feature training set
+	y_temp_2 = X_temp_2['Experiment'].tolist() #Target training set
+	X_temp_2 = X_temp_2.drop('Experiment',axis=1)
 
-	# ERRList = [item for item in X.index.tolist() if 'ERR' in item] #Get all rows with ERR in the index
-	# X_temp_3 = X.drop(ERRList, axis=0)
-	# y_temp_3 = X_temp_3['Experiment'].tolist()
-	# ERR = X.iloc[234:362]
-	# ERR = ERR.drop(['Experiment'], axis=1)
+	CCMD = X.iloc[114:234] 
+	CCMD_targets = CCMD['Experiment'] #Target prediction set
+	CCMD = CCMD.drop('Experiment', axis=1) #Feature prediction set
 
-	# MMRSList = [item for item in X.index.tolist() if 'MMRS' in item] #Get all rows with MMRS in the index
-	# X_temp_4 = X.drop(MMRSList, axis=0)
-	# y_temp_4 = X_temp_4['Experiment'].tolist()
-	# MMRS = X.iloc[362:466]
-	# MMRS = MMRS.drop(['Experiment'], axis=1)
+	#ERR processing
+	ERRList = [item for item in X.index.tolist() if 'ERR' in item] #Get all rows with ERR in the index
+	X_temp_3 = X.drop(ERRList, axis=0) #Feature training set
+	y_temp_3 = X_temp_3['Experiment'].tolist() #Target training set
+	X_temp_3 = X_temp_3.drop('Experiment',axis=1)
+
+	ERR = X.iloc[234:362] 
+	ERR_targets = ERR['Experiment'] #Target prediction set
+	ERR = ERR.drop('Experiment', axis=1) #Feature prediction set
+
+	#MMRS processing
+	MMRSList = [item for item in X.index.tolist() if 'MMRS' in item] #Get all rows with MMRS in the index
+	X_temp_4 = X.drop(MMRSList, axis=0) #Feature training set
+	y_temp_4 = X_temp_4['Experiment'].tolist() #Target training set
+	X_temp_4 = X_temp_4.drop('Experiment',axis=1)
+
+	MMRS = X.iloc[362:466] 
+	MMRS_targets = MMRS['Experiment'] #Target prediction set
+	MMRS = MMRS.drop('Experiment', axis=1) #Feature prediction set
 
 
-	# SAMEAList = [item for item in X.index.tolist() if 'SAMEA' in item] #Get all rows with SAMEA in the index
-	# X_temp_5 = X.drop(SAMEAList, axis=0)
-	# y_temp_5 = X_temp_5['Experiment'].tolist()
-	# SAMEA = X.iloc[466:575]
-	# SAMEA = SAMEA.drop(['Experiment'], axis=1)
+	#SAMEA processing
+	SAMEAList = [item for item in X.index.tolist() if 'SAMEA' in item] #Get all rows with SAMEA in the index
+	X_temp_5 = X.drop(SAMEAList, axis=0) #Feature training set
+	y_temp_5 = X_temp_5['Experiment'].tolist() #Target training set
+	X_temp_5 = X_temp_5.drop('Experiment',axis=1)
+
+	SAMEA = X.iloc[466:575] 
+	SAMEA_targets = SAMEA['Experiment'] #Target prediction set
+	SAMEA = SAMEA.drop('Experiment', axis=1) #Feature prediction set
 
 	#Scale the data
 	CCIS = StandardScaler().fit_transform(CCIS)
-	# CCMD = StandardScaler().fit_transform(CCMD)
-	# ERR = StandardScaler().fit_transform(ERR) 
-	# MMRS = StandardScaler().fit_transform(MMRS) 
-	# SAMEA = StandardScaler().fit_transform(SAMEA) 
-	
-	#Initialize classifier
-	logReg = LogisticRegression(C=10, max_iter=200)
-	print(logReg)
-	logReg.fit(X_temp_1, y_temp_1)
+	CCMD = StandardScaler().fit_transform(CCMD)
+	ERR = StandardScaler().fit_transform(ERR) 
+	MMRS = StandardScaler().fit_transform(MMRS) 
+	SAMEA = StandardScaler().fit_transform(SAMEA) 
 
-	#Predict
-	y_pred = logReg.predict(CCIS)
+	#Call return logistic regression function calls
+	return logisticRegeression(X,Y, loso=True,losoFeatureTrain=X_temp_1, losoTargetTrain=y_temp_1, losoFeaturePredict=CCIS, losoTargetPredict=CCIS_targets), logisticRegeression(X,Y, loso=True,losoFeatureTrain=X_temp_2, losoTargetTrain=y_temp_2, losoFeaturePredict=CCMD, losoTargetPredict=CCMD_targets), logisticRegeression(X,Y, loso=True,losoFeatureTrain=X_temp_3, losoTargetTrain=y_temp_3, losoFeaturePredict=ERR, losoTargetPredict=ERR_targets), logisticRegeression(X,Y, loso=True,losoFeatureTrain=X_temp_4, losoTargetTrain=y_temp_4, losoFeaturePredict=MMRS, losoTargetPredict=MMRS_targets), logisticRegeression(X,Y, loso=True,losoFeatureTrain=X_temp_5, losoTargetTrain=y_temp_5, losoFeaturePredict=SAMEA, losoTargetPredict=SAMEA_targets)
 
-	print(accuracy_score(CCIS_targets,y_pred))
-	print(confusion_matrix(CCIS_targets,y_pred))
+
+
 
 
 #Call methods and do final processing
