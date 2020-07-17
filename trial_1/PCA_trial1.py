@@ -34,7 +34,7 @@ finalFeaturesDf = featuresDf
 #Remove the metadata column to prepare for standard scaler
 featuresDf = featuresDf.drop(columns = 'Experiment')
 
-# #Decompose the data
+#Decompose the data
 x = StandardScaler().fit_transform(featuresDf) #Normalize the data
 
 #At this point our featuresDf has all of the raw data as well as an additional column called 'Experiment' which has the appropriate metadata
