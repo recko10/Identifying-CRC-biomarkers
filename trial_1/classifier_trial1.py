@@ -7,8 +7,9 @@ from sklearn.linear_model import *
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import roc_auc_score
 from sklearn.decomposition import PCA
-from sklearn.feature_selection import SelectFdr, chi2
 from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import RFE
+from sklearn.base import clone
 
 #Preprocess data
 featuresDf = pd.read_csv('taxonomic_abundances.csv') #Load in df
@@ -45,7 +46,7 @@ X = featuresDf.drop(columns = 'Experiment')
 Y = finalFeaturesDf['Experiment'].tolist()
 
 #Identify important features--takes a list of coefficients, a list of all the bacteria, and a prescaled feature dataframe as input
-def featureImportanceRegression(model, bacteria, X_prescale):
+def featureImportanceRegression(model, bacteria, X_prescale, Y):
 	importantBacteria = []
 	coefficientList = model.coef_.tolist()[0] 
 	#Identify bacteria with most impact on the model by identifying coefficients of high magnitude
@@ -53,17 +54,24 @@ def featureImportanceRegression(model, bacteria, X_prescale):
 		if coefficientList[index] < -0.40:
 			importantBacteria.append(bacteria[index])
 
-	print(f'Most impactful bacteria: {importantBacteria}\n')
-	print(f'Number of most impactful bacteria: {len(importantBacteria)}')
-	# X_feature_selected = SelectKBest(chi2, k=20).fit_transform(X, Y)
-	# importantFeatureData = X_feature_selected.tolist()
+	print(f'Most impactful bacteria (coef): {importantBacteria}\n')
+	print(f'Number of most impactful bacteria (coef): {len(importantBacteria)}\n')
 
-	# importantBacteria = []
-	# for item in importantFeatureData:
-	# 	for column in X.columns.tolist():
-	# 		if item == X[column].tolist():
-	# 			importantBacteria.append(column)
-	# print(importantBacteria)
+	#Clone the model (create duplicate with same paramters but that is not fit to data)
+	model = clone(model)
+
+	#Create the RFE model and select the top 'n_features_to_select' features
+	rfe = RFE(model, n_features_to_select=50)
+	rfe.fit(X_prescale,Y)
+
+	#Get all of the features under a threshold 
+	selectedFeatures = []
+	index=0
+	for index in range(len(X_prescale.columns.tolist())):
+		if rfe.ranking_[index] < 10:
+			selectedFeatures.append(X_prescale.columns.tolist()[index])
+	print(f'Most impactful bacteria (RFE): {selectedFeatures}\n')
+	print(f'Number of most impactful bacteria (RFE): {len(selectedFeatures)}')
 
 
 #Scales features and then maps them onto a new vector space
@@ -142,7 +150,7 @@ def logisticRegeression(X, Y, loso=False, losoFeatureTrain = pd.DataFrame(['Empt
 	print(f'AUROC score: {roc_auc_score(y_test, y_pred_roc)}\n')
 
 	#Identify important features
-	featureImportanceRegression(logReg, bacteria, X_prescale)
+	featureImportanceRegression(logReg, bacteria, X_prescale,Y)
 
 def lassoRegression(X, Y):
 	X = StandardScaler().fit_transform(X) #Scale the data
