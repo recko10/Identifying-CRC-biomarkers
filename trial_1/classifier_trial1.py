@@ -369,14 +369,17 @@ def LOSONoFrance(X,Y):
 
 
 
-#Call methods and do final processing
-#X = pca(X)
+#Final data manipulations
+#X = pca(X) #PCA data
 #binaryData(X,0.001) #Make features binary (1 if above threshold 0 if below)
 
-#LOSO(X,Y)
-#LOSONoUS(X,Y)
-#LOSONoFrance(X,Y)
-#kneighbors(X, Y)
-logisticRegeression(X,Y)
-#lassoRegression(X, Y)
+#Run models
+logisticRegeression(X,Y) #Run logreg
+#kneighbors(X, Y) #Run KNeighbors
+#lassoRegression(X, Y) #Run lasso
+
+#Run processes
+#LOSO(X,Y) #Run LOSO
+#LOSONoUS(X,Y) #Run LOSO without US
+#LOSONoFrance(X,Y) #Run LOSO without France
 
