@@ -3,32 +3,32 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt 
 
-#Preprocess data
-featuresDf = pd.read_csv('taxonomic_abundances_test.csv') #Load in df
-featuresDf = featuresDf.T #Transpose featuresDf (switch rows and columns and adjust values accordingly)
-featuresDf = featuresDf.drop(0, axis=1)
+# #Preprocess data
+# featuresDf = pd.read_csv('taxonomic_abundances_test.csv') #Load in df
+# featuresDf = featuresDf.T #Transpose featuresDf (switch rows and columns and adjust values accordingly)
+# featuresDf = featuresDf.drop(0, axis=1)
 
-columnList = []
-for column in featuresDf.columns.tolist():
-	columnList.append(featuresDf.at['Unnamed: 0', column])
+# columnList = []
+# for column in featuresDf.columns.tolist():
+# 	columnList.append(featuresDf.at['Unnamed: 0', column])
 
-columnList = [x.split('[',1)[0] for x in columnList]
+# columnList = [x.split('[',1)[0] for x in columnList]
 
-featuresDf.columns = columnList #Change indices to values in this list
-featuresDf = featuresDf.drop('Unnamed: 0', axis=0) #Drop the column
+# featuresDf.columns = columnList #Change indices to values in this list
+# featuresDf = featuresDf.drop('Unnamed: 0', axis=0) #Drop the column
 
-featuresDf.to_csv('results.csv')
+# featuresDf.to_csv('results.csv')
 
-featuresDf['Experiment'] = '' #Create empty column to be filled with metadata items later
+# featuresDf['Experiment'] = '' #Create empty column to be filled with metadata items later
 
-#Create df with metadata
-targetDf = pd.read_csv('metadata_test.csv')
+# #Create df with metadata
+# targetDf = pd.read_csv('metadata_test.csv')
 
-#Set the appropriate rows in the Experiment column to be equal to the appropriate rows of the Group column
-index = 0
-for sample in targetDf['Sample ID']:
-	featuresDf.loc[sample,'Experiment'] = targetDf.loc[index, 'Group'] 
-	index+=1
+# #Set the appropriate rows in the Experiment column to be equal to the appropriate rows of the Group column
+# index = 0
+# for sample in targetDf['Sample ID']:
+# 	featuresDf.loc[sample,'Experiment'] = targetDf.loc[index, 'Group'] 
+# 	index+=1
 
 # #Remove rows without any metadata
 # featuresDf = featuresDf[featuresDf.Experiment != '']
