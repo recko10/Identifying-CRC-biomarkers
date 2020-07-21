@@ -77,7 +77,7 @@ class preprocess:
 		return finalDf
 
 	#Goes through a file with both metadata and waterfall abundances in it and converts it to a standard format
-	def curatedMetagenomicDataFormatToTaxonomic(path):
+	def curatedMetagenomicDataFormatToTaxonomic(self, path):
 
 		#Preprocess data
 		featuresDf = pd.read_csv(path, sep='\t') #Load in df
@@ -131,3 +131,4 @@ class preprocess:
 		featuresDf.columns = newHeaders
 
 		return featuresDf, targets
+

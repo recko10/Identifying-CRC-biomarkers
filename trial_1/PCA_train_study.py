@@ -4,7 +4,7 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt 
 
 #Preprocess data
-featuresDf = pd.read_csv('taxonomic_abundances.csv') #Load in df
+featuresDf = pd.read_csv('data/taxonomic_abundances.csv') #Load in df
 
 #indexList = [entry.split('[',1)[0] for entry in featuresDf['Unnamed: 0']] #List of bacteria names 
 indexList = [entry for entry in featuresDf['Unnamed: 0']] #List of bacteria names 
@@ -17,7 +17,7 @@ featuresDf = featuresDf.T #Transpose featuresDf (switch rows and columns and adj
 featuresDf['Experiment'] = '' #Create empty column to be filled with metadata items later
 
 #Create df with metadata
-targetDf = pd.read_csv('metadata.csv')
+targetDf = pd.read_csv('data/metadata.csv')
 
 #Set the appropriate rows in the Experiment column to be equal to the appropriate rows of the Group column
 index = 0
