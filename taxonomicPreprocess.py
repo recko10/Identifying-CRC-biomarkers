@@ -16,6 +16,7 @@ class preprocess:
 				filepath = subdir + os.sep + file
 				if file == '.DS_Store':
 					continue
+
 				fileNames.append(file)
 				#File should always be a tsv
 				df = pd.read_csv(filepath, sep='\t', engine='python') #Import files into dataframe assuming 'tab' is the separator
@@ -30,14 +31,18 @@ class preprocess:
 							speciesToWeights[species] = []
 
 		numberOfLoops = 1
-
+		subdirList = []
 		#Append weights to dictionary
 		for subdir, dirs, files in os.walk(directory):
+
 			for file in files:
 				filepath = subdir + os.sep + file
 
 				if file == '.DS_Store':
 					continue
+
+				if subdir not in subdirList:
+					subdirList.append(subdir)
 
 				#File should always be a tsv
 				df = pd.read_csv(filepath, sep='\t', engine='python') #Import files into dataframe assuming 'tab' is the separator
@@ -74,9 +79,29 @@ class preprocess:
 			sampleNames[count] = sampleNames[count].split('_bugs',1)[0]
 		finalDf.index=sampleNames
 
-		return finalDf
+		#Split dataframe
+		dfList = []
+		subdirFileCount=0
+		runOnce = False
+		for subdir in subdirList:
+			
+			previous=subdirFileCount
+			subdirFileCount=0
+
+			for file in os.listdir(subdir):
+				if file == '.DS_Store':
+					continue
+				subdirFileCount+=1
+
+			if runOnce == False:
+				dfList.append(finalDf.iloc[:subdirFileCount,:])
+			if runOnce == True:
+				dfList.append(finalDf.iloc[previous:previous+subdirFileCount, :])
+
+			runOnce = True
+		return dfList
 
 preprocess = preprocess()
-df = preprocess.primeFormatToTaxonomic('taxonomic_profiles')
-df.to_csv('new.csv')
+dfList = preprocess.primeFormatToTaxonomic('taxonomic_profiles')
+print(dfList)
 
