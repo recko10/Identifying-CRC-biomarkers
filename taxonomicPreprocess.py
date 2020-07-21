@@ -20,7 +20,7 @@ def primeFormatToTaxonomic():
 		#print(df)
 		df.columns=['Microbes', 'Weights'] #Change column names
 
-		#Iterate therough species in microbes
+		#Iterate through species in microbes
 		for species in df['Microbes']:
 			if "s__" in species and "t__" not in species:
 				#Log all species in dictionary
@@ -75,10 +75,10 @@ def primeFormatToTaxonomic():
 	return finalDf
 
 #Goes through a file with both metadata and waterfall abundances in it and converts it to a standard format
-def curateMetagenomicDataFormatToTaxonomic():
+def curatedMetagenomicDataFormatToTaxonomic(path):
 
 	#Preprocess data
-	featuresDf = pd.read_csv('trial_1/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', sep='\t') #Load in df
+	featuresDf = pd.read_csv(path, sep='\t') #Load in df
 
 	#Changes indices
 	featuresDf.index = featuresDf['Unnamed: 0'].tolist()
@@ -89,25 +89,36 @@ def curateMetagenomicDataFormatToTaxonomic():
 	targets = []
 	#Parse through list, extract targets, delete metadata
 	for index in featuresDf.index.tolist():
-		#Delete every row unless the row is k_Bacteria or study_condition
-		if index != 'k__Bacteria' and index != 'study_condition':
-			featuresDf = featuresDf.drop(index, axis=0)
 
 		#Create targets list
 		if index == 'study_condition':
 			for column in featuresDf.columns.tolist():
 				if featuresDf.at[index, column] == 'control' or featuresDf.at[index, column] == 'CRC':
 					targets.append(featuresDf.at[index,column])
-			featuresDf = featuresDf.drop(index, axis=0)
+					continue
+				featuresDf = featuresDf.drop(column, axis=1) #Drop columns without appropriate metadata
+			featuresDf = featuresDf.drop(index, axis=0) #Drop the "study_condition" row
+			continue 
 
 		#End deletion when you arrive at the k_Bacteria index
-		if index == 'k__Bacteria':
+		if 's__' in index:
 			break
 
-	
+		#Delete row
+		featuresDf = featuresDf.drop(index, axis=0)
+
+	#Transpose the dataframe
+	featuresDf = featuresDf.T 
+
+	#Changes all "controls" into "CTR"
+	for index in range(len(targets)):
+		if targets[index] == 'control':
+			targets[index] = 'CTR'
+
+	return featuresDf, targets
 
 
+featuresDf, targets = curatedMetagenomicDataFormatToTaxonomic('trial_1/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv')
 
-curateMetagenomicDataFormatToTaxonomic()
 # finalDf = primeFormatToTaxonomic()
 # finalDf.to_csv('results.csv')
