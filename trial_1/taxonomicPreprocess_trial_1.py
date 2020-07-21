@@ -132,3 +132,8 @@ class preprocess:
 
 		return featuresDf, targets
 
+
+# preprocess = preprocess()
+# featuresDf, targets = preprocess.curatedMetagenomicDataFormatToTaxonomic('data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv')
+# print(featuresDf)
+# print(targets)

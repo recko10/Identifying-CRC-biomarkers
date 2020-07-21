@@ -52,7 +52,25 @@ preprocess = preprocess()
 #Preprocess test set
 X_test, Y_test = preprocess.curatedMetagenomicDataFormatToTaxonomic('data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv')
 
-print(X_test)
-print(Y_test)
+X_train.to_csv('X_train.csv')
+X_test.to_csv('X_test.csv')
+
+# #Remove unnecessary features from the train set
+# newHeaders = [x for x in X_train.columns.tolist()]
+# for element in X_train.columns.tolist():
+# 	if 'sp.' in element:
+# 		newHeaders.remove(element)
+# 		continue
+# 	if 'unknown' in element:
+# 		newHeaders.remove(element)
+# 		continue
+# 	if len(element.split(' ')) > 3: ##FIX THIS
+# 		newHeaders.remove(element)
+# 		continue
+# 	if '[' in element:
+# 		newHeaders[newHeaders.index(element)] = newHeaders[newHeaders.index(element)].split('[', 1)[0]
+
+
+# print(newHeaders)
 
 

@@ -4,9 +4,8 @@ import os
 class preprocess:
 
 	#Goes through a directory filled with prime-formatted files and converts them into a standard format
-	def primeFormatToTaxonomic():
+	def primeFormatToTaxonomic(self, directory):
 		#directory = os.fsencode('taxonomic_profiles')
-		directory = 'taxonomic_profiles'
 
 		speciesToWeights = {} #Dict that will have species as keys and a list taxonomic weights as values
 		speciesNotPresent = []
@@ -77,7 +76,7 @@ class preprocess:
 		return finalDf
 
 	#Goes through a file with both metadata and waterfall abundances in it and converts it to a standard format
-	def curatedMetagenomicDataFormatToTaxonomic(path):
+	def curatedMetagenomicDataFormatToTaxonomic(self, path):
 
 		#Preprocess data
 		featuresDf = pd.read_csv(path, sep='\t') #Load in df
@@ -131,3 +130,12 @@ class preprocess:
 		featuresDf.columns = newHeaders
 
 		return featuresDf, targets
+
+preprocess = preprocess()
+df = preprocess.primeFormatToTaxonomic('taxonomic_profiles')
+print(df)
+df.to_csv('results.csv')
+# featuresDf, targets = preprocess.curatedMetagenomicDataFormatToTaxonomic('trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv')
+# print(featuresDf)
+# print(targets)
+
