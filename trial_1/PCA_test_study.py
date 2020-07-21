@@ -4,7 +4,17 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt 
 
 # #Preprocess data
-# featuresDf = pd.read_csv('taxonomic_abundances_test.csv') #Load in df
+# featuresDf = pd.read_csv('ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', sep='\t') #Load in df
+
+# #Parse through list, extract targets, delete metadata
+# for index in range(len(featuresDf.index.tolist())):
+# 	if featuresDf.index.tolist()[index] != 'k__Bacteria' and featuresDf.index.tolist()[index] != 'study_condition':
+# 		featuresDf = featuresDf.drop(index, axis=0)
+# 	if featuresDf.index.tolist()[index] == 'k__Bacteria':
+# 		break
+# 	if featuresDf.index.tolist()[index] == ''
+
+
 # featuresDf = featuresDf.T #Transpose featuresDf (switch rows and columns and adjust values accordingly)
 # featuresDf = featuresDf.drop(0, axis=1)
 
