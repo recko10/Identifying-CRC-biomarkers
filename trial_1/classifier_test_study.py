@@ -10,7 +10,7 @@ from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import RFE
 from sklearn.base import clone
-from taxonomicPreprocess import *
+from taxonomicPreprocess_trial_1 import *
 
 #Preprocess data
 featuresDf = pd.read_csv('data/taxonomic_abundances.csv') #Load in df
@@ -46,14 +46,11 @@ X_train = featuresDf.drop(columns = 'Experiment')
 #Convert the metadata column into a list of labels
 Y_train = finalFeaturesDf['Experiment'].tolist()
 
-#Create object of preprocess class
+#Preprocess test features
 preprocess = preprocess()
+dfList = preprocess.standardPreprocess('data/ThomasAM_2018a')
+X_test = dfList[0]
 
-#Preprocess test set
-X_test, Y_test = preprocess.curatedMetagenomicDataFormatToTaxonomic('data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv')
-
-X_train.to_csv('X_train.csv')
-X_test.to_csv('X_test.csv')
 
 # #Remove unnecessary features from the train set
 # newHeaders = [x for x in X_train.columns.tolist()]
@@ -64,7 +61,7 @@ X_test.to_csv('X_test.csv')
 # 	if 'unknown' in element:
 # 		newHeaders.remove(element)
 # 		continue
-# 	if len(element.split(' ')) > 3: ##FIX THIS
+# 	if len(element.split('\s')) > 3: ##FIX THIS
 # 		newHeaders.remove(element)
 # 		continue
 # 	if '[' in element:
@@ -72,5 +69,27 @@ X_test.to_csv('X_test.csv')
 
 
 # print(newHeaders)
+
+
+
+
+#Preprocess test targets
+thomasDf = pd.read_csv('data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', sep='\t')
+
+#Mark unnecessary columns and append to targets list
+Y_test = [x for x in thomasDf.iloc[3, :].tolist()]
+Y_test.pop(0)
+
+for index in range(len(Y_test)):
+	if Y_test[index] == 'adenoma':
+		X_test = X_test.drop(thomasDf.columns.tolist()[index], axis=0)
+		continue
+	if Y_test[index] == 'control':
+		Y_test[index] = 'CTR'
+
+Y_test = [x for x in Y_test if x != 'adenoma']
+
+
+
 
 
