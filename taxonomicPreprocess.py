@@ -4,7 +4,7 @@ import os
 class preprocess:
 
 	#Takes as input a curatedMetagenomicData abundance file (with no modifications) and breaks it into separate files, each file representing 1 sample's abundances
-	def decompose(self, path):
+	def decompose(self, path='', out=''):
 		df = pd.read_csv(path, sep='\t')
 
 		#Set indices
@@ -24,7 +24,9 @@ class preprocess:
 		df = df.drop('Unnamed: 0', axis=1)
 
 		#Make folder (titled with the file name without the metaphlan_bugs.stool.tsv) to store output files
-		folderPath = path.split('/')[-1].split('.')[0] 
+		#folderPath = path.split('/')[-1].split('.')[0]
+		
+		folderPath=out 
 		os.makedirs(folderPath)
 		
 		#Create separate files
@@ -97,7 +99,7 @@ class preprocess:
 		newHeaders = [key for key in speciesToWeights]
 		for count in range(len(newHeaders)):
 			newHeaders[count] = newHeaders[count].split('s__', 1)[1]
-		finalDf.columns = [newHeaders]
+		finalDf.columns = newHeaders
 
 		#Change indices
 		sampleNames = [x.split('.',1)[0] for x in fileNames if x!= '.DS_Store']
@@ -128,9 +130,9 @@ class preprocess:
 		return dfList
 
 # preprocess = preprocess()
-# df = preprocess.decompose('trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv')
+# df = preprocess.decompose(path='trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', out = 'nani')
 
-# dfList = preprocess.standardPreprocess('ThomasAM_2018a')
-# dfList[0].to_csv('results.csv')
+# dfList = preprocess.standardPreprocess('nani')
+# print(dfList[0])
 
 
