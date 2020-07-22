@@ -7,33 +7,20 @@ class preprocess:
 	def decompose(self, path):
 		df = pd.read_csv(path, sep='\t')
 
-		#Select rows
+		#Set indices
 		df.index = df.iloc[:, 0].tolist()
 
 		#Parse through list, extract targets, delete metadata
 		for index in df.index.tolist():
 
-			#End deletion when you arrive at the k_Bacteria index
-			if 's__' in index:
+			#End deletion when you arrive at the a bacteria index
+			if '__' in index:
 				break
 
 			#Delete row
 			df = df.drop(index, axis=0)
 
-		#Delete all lower taxonomic levels
-		for index in df.index.tolist():
-			if 's__' not in index:
-				df = df.drop(index, axis=0)
-
-			if 't__' in index:
-				df = df.drop(index, axis=0)
-
-		#Change indices
-		newIndex = [element.split('s__',1)[1] for element in df.index.tolist()]
-
-		df.index = newIndex
-
-		#Remove the extra row
+		#Drop unnamed column
 		df = df.drop('Unnamed: 0', axis=1)
 
 		#Make folder (titled with the file name without the metaphlan_bugs.stool.tsv) to store output files
@@ -42,11 +29,11 @@ class preprocess:
 		
 		#Create separate files
 		for column in df.columns.tolist():
-			df[column].to_csv(folderPath + os.sep + column)
+			df[column].to_csv(folderPath + os.sep + column + '.tsv', sep='\t')
 
 
 	#Goes through directory with folders and returns multiple abundance dataframes all following the same superset and format
-	def standardProcess(self, directory):
+	def standardPreprocess(self, directory):
 
 		speciesToWeights = {} #Dict that will have species as keys and a list taxonomic weights as values
 		speciesNotPresent = []
@@ -62,9 +49,7 @@ class preprocess:
 				fileNames.append(file)
 				#File should always be a tsv
 				df = pd.read_csv(filepath, sep='\t', engine='python') #Import files into dataframe assuming 'tab' is the separator
-				#print(df)
 				df.columns=['Microbes', 'Weights'] #Change column names
-
 				#Iterate through species in microbes
 				for species in df['Microbes']:
 					if "s__" in species and "t__" not in species:
@@ -88,7 +73,6 @@ class preprocess:
 
 				#File should always be a tsv
 				df = pd.read_csv(filepath, sep='\t', engine='python') #Import files into dataframe assuming 'tab' is the separator
-				#print(df)
 				df.columns=['Microbes', 'Weights'] #Change column names
 
 				for species in df['Microbes']:
@@ -116,7 +100,7 @@ class preprocess:
 		finalDf.columns = [newHeaders]
 
 		#Change indices
-		sampleNames = [x for x in fileNames if x!= '.DS_Store']
+		sampleNames = [x.split('.',1)[0] for x in fileNames if x!= '.DS_Store']
 		for count in range(len(sampleNames)):
 			sampleNames[count] = sampleNames[count].split('_bugs',1)[0]
 		finalDf.index=sampleNames
@@ -143,9 +127,10 @@ class preprocess:
 			runOnce = True
 		return dfList
 
-preprocess = preprocess()
-df = preprocess.decompose('trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv')
+# preprocess = preprocess()
+# df = preprocess.decompose('trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv')
 
-# dfList = preprocess.standardProcess('taxonomic_profiles')
-# print(dfList)
+# dfList = preprocess.standardPreprocess('ThomasAM_2018a')
+# dfList[0].to_csv('results.csv')
+
 
