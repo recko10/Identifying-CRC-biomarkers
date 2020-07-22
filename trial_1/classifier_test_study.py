@@ -10,67 +10,170 @@ from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import RFE
 from sklearn.base import clone
-from taxonomicPreprocess import *
+from taxonomicPreprocess_trial_1 import *
 
-#Preprocess data
+#TRAIN DATA
+
+#Load in data
 featuresDf = pd.read_csv('data/taxonomic_abundances.csv') #Load in df
 
-#indexList = [entry.split('[',1)[0] for entry in featuresDf['Unnamed: 0']] #List of bacteria names 
+
 indexList = [entry for entry in featuresDf['Unnamed: 0']] #List of bacteria names 
 
 featuresDf.index = indexList #Change indices to values in this column
 featuresDf = featuresDf.drop(columns='Unnamed: 0') #Drop the column
 
-featuresDf = featuresDf.T #Transpose featuresDf (switch rows and columns and adjust values accordingly)
+X_train = featuresDf
 
-featuresDf['Experiment'] = ''
+#Transpose
+X_train = X_train.T
+
+#Empty column for metadata
+X_train['Experiment'] = ''
 
 #Create df with metadata
 targetDf = pd.read_csv('data/metadata.csv')
 
-#Set the appropriate rows in the Experiment column to be equal to the appropriate rows of the Group column
-index = 0
-for sample in targetDf['Sample_ID']:
-	featuresDf.loc[sample,'Experiment'] = targetDf.loc[index, 'Group'] 
+#Convert the metadata column into a list of labels
+Y_train = targetDf['Group'].tolist()
+
+#Metadata sample IDs
+xIndex = targetDf['Sample_ID']
+
+#Add metadata to applicable samples
+index=0
+for element in xIndex:
+	if element in X_train.index.tolist():
+		X_train.at[element, 'Experiment'] = Y_train[index]
 	index+=1
 
-#Remove rows without any metadata
-featuresDf = featuresDf[featuresDf.Experiment != '']
+#Remove samples with no metadata
+X_train = X_train[X_train.Experiment != '']
 
-#This new dataframe represents featuresDf but with the metadata column in place
-finalFeaturesDf = featuresDf
+#Remove unnecessary features from the train data
+index=0
+for element in X_train.columns.tolist():
+	if 'sp.' in element:
+		X_train = X_train.drop(element, axis=1)
+		continue
+	if 'unknown' in element:
+		X_train = X_train.drop(element, axis=1)
+		continue
+	if '[' in element:
+		X_train = X_train.rename(columns={element:element.split(' [', 1)[0]})
+		continue
+	if '/' in element:
+		X_train = X_train.rename(columns={element:element.split('/', 1)[0]+ ' ' + element.split('/', 1)[1]})
+	index+=1
 
-#Remove the metadata column
-X_train = featuresDf.drop(columns = 'Experiment')
+for element in X_train.columns.tolist():
+	if '/' in element:
+		X_train = X_train.rename(columns={element:element.split('/', 1)[0]})
 
-#Convert the metadata column into a list of labels
-Y_train = finalFeaturesDf['Experiment'].tolist()
+for element in X_train.columns.tolist():		
+	if ' ' in element:
+		X_train = X_train.rename(columns={element:element.split()[0] + '_' +element.split()[1]})
 
-#Create object of preprocess class
+#Create list of targets
+Y_train = X_train['Experiment'].tolist() 
+
+#Remove repeats
+X_train = X_train.iloc[:,~X_train.columns.duplicated()]
+
+#Remove targets column
+X_train = X_train.drop('Experiment', axis=1)
+
+
+#TEST DATA
+
+#Preprocess test features
 preprocess = preprocess()
+dfList = preprocess.standardPreprocess('data/test')
+X_test = dfList[0]
 
-#Preprocess test set
-X_test, Y_test = preprocess.curatedMetagenomicDataFormatToTaxonomic('data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv')
+#Preprocess test targets
+thomasDf = pd.read_csv('data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', sep='\t')
 
-X_train.to_csv('X_train.csv')
-X_test.to_csv('X_test.csv')
+#Mark unnecessary columns and append to targets list
+Y_test = [x for x in thomasDf.iloc[3, :].tolist()]
+Y_test.pop(0)
 
-# #Remove unnecessary features from the train set
-# newHeaders = [x for x in X_train.columns.tolist()]
-# for element in X_train.columns.tolist():
-# 	if 'sp.' in element:
-# 		newHeaders.remove(element)
-# 		continue
-# 	if 'unknown' in element:
-# 		newHeaders.remove(element)
-# 		continue
-# 	if len(element.split(' ')) > 3: ##FIX THIS
-# 		newHeaders.remove(element)
-# 		continue
-# 	if '[' in element:
-# 		newHeaders[newHeaders.index(element)] = newHeaders[newHeaders.index(element)].split('[', 1)[0]
+#Clean up targets
+for index in range(len(Y_test)):
+	if Y_test[index] == 'adenoma':
+		X_test = X_test.drop(thomasDf.columns.tolist()[index], axis=0)
+		continue
+	if Y_test[index] == 'control':
+		Y_test[index] = 'CTR'
+
+Y_test = [x for x in Y_test if x != 'adenoma']
 
 
-# print(newHeaders)
+#Find common columns
+for element in X_test.columns.tolist():
+	if element not in X_train.columns.tolist():
+		X_test = X_test.drop(element,axis=1)
+
+for element in X_train.columns.tolist():
+	if element not in X_test.columns.tolist():
+		X_train = X_train.drop(element,axis=1)
+
+
+#Identify important features--takes a list of coefficients, a list of all the bacteria, and a prescaled feature dataframe as input
+def featureImportanceRegression(model, bacteria, X_prescale, Y):
+	importantBacteria = []
+	coefficientList = model.coef_.tolist()[0] 
+	#Identify bacteria with most impact on the model by identifying coefficients of high magnitude
+	for index in range(len(coefficientList)):
+		if coefficientList[index] < -0.40:
+			importantBacteria.append(bacteria[index])
+
+	print(f'Most impactful bacteria (coef): {importantBacteria}\n')
+	print(f'Number of most impactful bacteria (coef): {len(importantBacteria)}\n')
+
+	#Clone the model (create duplicate with same paramters but that is not fit to data)
+	model = clone(model)
+
+	#Create the RFE model and select the top 'n_features_to_select' features
+	rfe = RFE(model, n_features_to_select=50)
+	rfe.fit(X_prescale,Y)
+
+	#Get all of the features under a threshold 
+	selectedFeatures = []
+	index=0
+	for index in range(len(X_prescale.columns.tolist())):
+		if rfe.ranking_[index] < 10:
+			selectedFeatures.append(X_prescale.columns.tolist()[index])
+	print(f'Most impactful bacteria (RFE): {selectedFeatures}\n')
+	print(f'Number of most impactful bacteria (RFE): {len(selectedFeatures)}')
+
+#Logistic classifier-- takes in featuers (not scaled) and targets for both the train and test set
+def logisticRegeression(X_train, X_test, Y_train, Y_test):
+
+	#For feature selection
+	X_prescale = X_train
+	bacteria = X_prescale.columns.tolist() 
+
+	#Scale the data
+	X_train = StandardScaler().fit_transform(X_train)
+	X_test = StandardScaler().fit_transform(X_test)
+
+
+	#Initialize classifier
+	logReg = LogisticRegression(C=10, max_iter=200)
+	logReg.fit(X_train, Y_train)
+
+	#Predict
+	Y_pred = logReg.predict(X_test)
+	Y_pred_roc = logReg.decision_function(X_test)
+
+	print(f'Accuracy score: {accuracy_score(Y_test,Y_pred)}')
+	print(f'Confusion matrix: {confusion_matrix(Y_test,Y_pred)}')
+	print(f'AUROC score: {roc_auc_score(Y_test, Y_pred_roc)}\n')
+
+	#Identify important features
+	#featureImportanceRegression(logReg, bacteria, X_prescale,Y)
+
+logisticRegeression(X_train, X_test, Y_train, Y_test)
 
 

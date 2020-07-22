@@ -3,8 +3,39 @@ import os
 
 class preprocess:
 
-	#Goes through a directory filled with prime-formatted files and converts them into a standard format
-	def primeFormatToTaxonomic(self, directory):
+	#Takes as input a curatedMetagenomicData abundance file (with no modifications) and breaks it into separate files, each file representing 1 sample's abundances
+	def decompose(self, path='', out=''):
+		df = pd.read_csv(path, sep='\t')
+
+		#Set indices
+		df.index = df.iloc[:, 0].tolist()
+
+		#Parse through list, extract targets, delete metadata
+		for index in df.index.tolist():
+
+			#End deletion when you arrive at the a bacteria index
+			if '__' in index:
+				break
+
+			#Delete row
+			df = df.drop(index, axis=0)
+
+		#Drop unnamed column
+		df = df.drop('Unnamed: 0', axis=1)
+
+		#Make folder (titled with the file name without the metaphlan_bugs.stool.tsv) to store output files
+		#folderPath = path.split('/')[-1].split('.')[0]
+		
+		folderPath=out 
+		os.makedirs(folderPath)
+		
+		#Create separate files
+		for column in df.columns.tolist():
+			df[column].to_csv(folderPath + os.sep + column + '.tsv', sep='\t')
+
+
+	#Goes through directory with folders and returns multiple abundance dataframes all following the same superset and format
+	def standardPreprocess(self, directory):
 
 		speciesToWeights = {} #Dict that will have species as keys and a list taxonomic weights as values
 		speciesNotPresent = []
@@ -20,9 +51,7 @@ class preprocess:
 				fileNames.append(file)
 				#File should always be a tsv
 				df = pd.read_csv(filepath, sep='\t', engine='python') #Import files into dataframe assuming 'tab' is the separator
-				#print(df)
 				df.columns=['Microbes', 'Weights'] #Change column names
-
 				#Iterate through species in microbes
 				for species in df['Microbes']:
 					if "s__" in species and "t__" not in species:
@@ -46,7 +75,6 @@ class preprocess:
 
 				#File should always be a tsv
 				df = pd.read_csv(filepath, sep='\t', engine='python') #Import files into dataframe assuming 'tab' is the separator
-				#print(df)
 				df.columns=['Microbes', 'Weights'] #Change column names
 
 				for species in df['Microbes']:
@@ -71,10 +99,10 @@ class preprocess:
 		newHeaders = [key for key in speciesToWeights]
 		for count in range(len(newHeaders)):
 			newHeaders[count] = newHeaders[count].split('s__', 1)[1]
-		finalDf.columns = [newHeaders]
+		finalDf.columns = newHeaders
 
 		#Change indices
-		sampleNames = [x for x in fileNames if x!= '.DS_Store']
+		sampleNames = [x.split('.',1)[0] for x in fileNames if x!= '.DS_Store']
 		for count in range(len(sampleNames)):
 			sampleNames[count] = sampleNames[count].split('_bugs',1)[0]
 		finalDf.index=sampleNames
@@ -114,7 +142,10 @@ class preprocess:
 			runOnce = True
 		return dfList
 
-preprocess = preprocess()
-dfList = preprocess.primeFormatToTaxonomic('taxonomic_profiles')
-print(dfList)
+# preprocess = preprocess()
+# df = preprocess.decompose(path='trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', out = 'nani')
+
+# dfList = preprocess.standardPreprocess('nani')
+# print(dfList[0])
+
 
