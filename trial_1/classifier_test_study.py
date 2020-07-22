@@ -88,8 +88,11 @@ X_train = X_train.drop('Experiment', axis=1)
 
 #Preprocess test features
 preprocess = preprocess()
-dfList = preprocess.standardPreprocess('data/test')
+preprocess.decompose(path='data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', out='data/decomp')
+
+dfList = preprocess.standardPreprocess('data/decomp')
 X_test = dfList[0]
+
 
 #Preprocess test targets
 thomasDf = pd.read_csv('data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', sep='\t')
@@ -173,6 +176,7 @@ def logisticRegeression(X_train, X_test, Y_train, Y_test):
 
 	#Identify important features
 	#featureImportanceRegression(logReg, bacteria, X_prescale,Y)
+
 
 logisticRegeression(X_train, X_test, Y_train, Y_test)
 

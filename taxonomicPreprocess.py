@@ -1,11 +1,17 @@
 import pandas as pd
 import os
+import shutil
 
 class preprocess:
 
-	#Takes as input a curatedMetagenomicData abundance file (with no modifications) and breaks it into separate files, each file representing 1 sample's abundances
-	def decompose(self, path='', out=''):
-		df = pd.read_csv(path, sep='\t')
+	#Takes as input a curatedMetagenomicData abundance file/dataframe (with no modifications) and breaks it into separate files, each file representing 1 sample's abundances
+	def decompose(self, path='', out='', dataframe=None):
+
+		#Option to pass a dataframe as a parameter
+		if dataframe != None:
+			df = dataframe
+		else:
+			df = pd.read_csv(path, sep='\t')
 
 		#Set indices
 		df.index = df.iloc[:, 0].tolist()
@@ -27,6 +33,9 @@ class preprocess:
 		#folderPath = path.split('/')[-1].split('.')[0]
 		
 		folderPath=out 
+
+		if os.path.exists(folderPath):
+			shutil.rmtree(folderPath)
 		os.makedirs(folderPath)
 		
 		#Create separate files
