@@ -86,9 +86,9 @@ class preprocess:
 				df = pd.read_csv(filepath, sep='\t', engine='python') #Import files into dataframe assuming 'tab' is the separator
 				df.columns=['Microbes', 'Weights'] #Change column names
 
+				#Append weights to dictionary
 				for species in df['Microbes']:
 					if "s__" in species and "t__" not in species:
-						#Check if the current bacteria has already been logged or not
 						speciesToWeights[species].append(float(df.at[index, 'Weights']))
 					index+=1
 				
