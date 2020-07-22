@@ -3,7 +3,7 @@ import os
 
 class preprocess:
 
-	#Goes through a directory filled with prime-formatted files and converts them into a standard format
+	#Goes through directory with folders and creates multiple abundance files all following the same superset
 	def primeFormatToTaxonomic(self, directory):
 
 		speciesToWeights = {} #Dict that will have species as keys and a list taxonomic weights as values
