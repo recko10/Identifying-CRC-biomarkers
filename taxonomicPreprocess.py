@@ -3,8 +3,50 @@ import os
 
 class preprocess:
 
-	#Goes through directory with folders and creates multiple abundance files all following the same superset
-	def primeFormatToTaxonomic(self, directory):
+	#Takes as input a curatedMetagenomicData abundance file (with no modifications) and breaks it into separate files, each file representing 1 sample's abundances
+	def decompose(self, path):
+		df = pd.read_csv(path, sep='\t')
+
+		#Select rows
+		df.index = df.iloc[:, 0].tolist()
+
+		#Parse through list, extract targets, delete metadata
+		for index in df.index.tolist():
+
+			#End deletion when you arrive at the k_Bacteria index
+			if 's__' in index:
+				break
+
+			#Delete row
+			df = df.drop(index, axis=0)
+
+		#Delete all lower taxonomic levels
+		for index in df.index.tolist():
+			if 's__' not in index:
+				df = df.drop(index, axis=0)
+
+			if 't__' in index:
+				df = df.drop(index, axis=0)
+
+		#Change indices
+		newIndex = [element.split('s__',1)[1] for element in df.index.tolist()]
+
+		df.index = newIndex
+
+		#Remove the extra row
+		df = df.drop('Unnamed: 0', axis=1)
+
+		#Make folder (titled with the file name without the metaphlan_bugs.stool.tsv) to store output files
+		folderPath = path.split('/')[-1].split('.')[0] 
+		os.makedirs(folderPath)
+		
+		#Create separate files
+		for column in df.columns.tolist():
+			df[column].to_csv(folderPath + os.sep + column)
+
+
+	#Goes through directory with folders and returns multiple abundance dataframes all following the same superset and format
+	def standardProcess(self, directory):
 
 		speciesToWeights = {} #Dict that will have species as keys and a list taxonomic weights as values
 		speciesNotPresent = []
@@ -102,6 +144,8 @@ class preprocess:
 		return dfList
 
 preprocess = preprocess()
-dfList = preprocess.primeFormatToTaxonomic('taxonomic_profiles')
-print(dfList)
+df = preprocess.decompose('trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv')
+
+# dfList = preprocess.standardProcess('taxonomic_profiles')
+# print(dfList)
 
