@@ -125,18 +125,6 @@ class preprocess:
 			previous=subdirFileCount
 			subdirFileCount=0
 
-<<<<<<< HEAD
-	
-	
-	#Create dataframe from the species : weights dictionary
-	finalDf = pd.DataFrame.from_dict(speciesToWeights)
-	
-	#Change headers
-	newHeaders = [key for key in speciesToWeights]
-	for count in range(len(newHeaders)):
-		newHeaders[count] = newHeaders[count].split('s__', 1)[1]
-	finalDf.columns = [newHeaders]
-=======
 			for file in os.listdir(subdir):
 				if file == '.DS_Store':
 					continue
@@ -146,7 +134,6 @@ class preprocess:
 				dfList.append(finalDf.iloc[:subdirFileCount,:])
 			if runOnce == True:
 				dfList.append(finalDf.iloc[previous:previous+subdirFileCount, :])
->>>>>>> dev
 
 			runOnce = True
 		return dfList
