@@ -29,7 +29,7 @@ class ML:
 		model = clone(model)
 
 		#Create the RFE model and select the top 'n_features_to_select' features
-		rfe = RFE(model, n_features_to_select=50)
+		rfe = RFE(model, n_features_to_select=28)
 		X_scale = StandardScaler().fit_transform(X_prescale)
 
 		rfe.fit(X_scale,Y)

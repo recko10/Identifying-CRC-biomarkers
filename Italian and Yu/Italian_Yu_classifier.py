@@ -38,8 +38,13 @@ chineseDf = pd.read_csv('data/YuJ_2015.metaphlan_bugs_list.stool.tsv', sep='\t')
 Y_test = chineseDf.iloc[3, :].tolist()
 Y_test.pop(0)
 
-#Create, train, and predict using a classifier
+#Create logistic classifier to predict on Yu
 ml = ML()
-ml.logisticRegeression(X_train,X_test,Y_train,Y_test)
+#ml.logisticRegeression(X_train,X_test,Y_train,Y_test)
+
+#Create logistic classifier to predict on Italian
+print(X_test)
+ml.logisticRegeression(X_test, X_train,Y_test,Y_train)
+
 
 
