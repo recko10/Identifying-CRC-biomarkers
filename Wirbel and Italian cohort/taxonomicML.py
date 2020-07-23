@@ -22,7 +22,7 @@ class ML:
 			if coefficientList[index] < -0.40:
 				importantBacteria.append(bacteria[index])
 
-		print(f'Most impactful bacteria (coef): {importantBacteria}\n')
+		print(f'Most impactful bacteria (coef): {importantBacteria}')
 		print(f'Number of most impactful bacteria (coef): {len(importantBacteria)}\n')
 
 		#Clone the model (create duplicate with same paramters but that is not fit to data)
@@ -30,7 +30,9 @@ class ML:
 
 		#Create the RFE model and select the top 'n_features_to_select' features
 		rfe = RFE(model, n_features_to_select=50)
-		rfe.fit(X_prescale,Y)
+		X_scale = StandardScaler().fit_transform(X_prescale)
+
+		rfe.fit(X_scale,Y)
 
 		#Get all of the features under a threshold 
 		selectedFeatures = []
@@ -38,12 +40,12 @@ class ML:
 		for index in range(len(X_prescale.columns.tolist())):
 			if rfe.ranking_[index] < 10:
 				selectedFeatures.append(X_prescale.columns.tolist()[index])
-		print(f'Most impactful bacteria (RFE): {selectedFeatures}\n')
-		print(f'Number of most impactful bacteria (RFE): {len(selectedFeatures)}')
+		print(f'Most impactful bacteria (RFE): {selectedFeatures}')
+		print(f'Number of most impactful bacteria (RFE): {len(selectedFeatures)}\n')
 
 
 	#Takes as input a features df and a list of corresponding targets
-	def pca(self, X, Y):
+	def pca(self, X, Y, targets=['CRC','control'], colors=['r','b']):
 
 		#Scale
 		indices = X.index #Save X inidces to import into principalDf once it is created
@@ -62,8 +64,6 @@ class ML:
 		finalDf['target'] = Y
 
 		#Plot the principal components
-		targets = ['CRC','CTR']
-		colors = ['r','b']
 		fig = plt.figure(figsize = (8,8))
 		ax = fig.add_subplot(1,1,1) 
 		ax.set_xlabel('Principal Component 1', fontsize = 15)
@@ -101,7 +101,9 @@ class ML:
 		X_prescale_train = X_train
 		X_prescale_test = X_test
 
-		bacteria = X_prescale_train.columns.tolist()
+		bacteriaTrain = X_prescale_train.columns.tolist()
+		bacteriaTest = X_prescale_test.columns.tolist()
+
 		X_train = StandardScaler().fit_transform(X_train) #Scale the data
 		X_test= StandardScaler().fit_transform(X_test) #Scale the data
 
@@ -122,10 +124,10 @@ class ML:
 		ml = ML()
 
 		print('Train data feature importance information: \n')
-		ml.featureImportanceRegression(logReg, bacteria, X_prescale_train, Y_train)
+		ml.featureImportanceRegression(logReg, bacteriaTrain, X_prescale_train, Y_train)
 
 		print('Test data feature importance information: \n')
-		ml.featureImportanceRegression(logReg, bacteria, X_prescale_test, Y_test)
+		ml.featureImportanceRegression(logReg, bacteriaTest, X_prescale_test, Y_test)
 
 	def lassoRegression(self, X_train, X_test, Y_train, Y_test):
 		X = StandardScaler().fit_transform(X) #Scale the data

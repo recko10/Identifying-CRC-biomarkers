@@ -23,8 +23,6 @@ for index in range(len(Y)):
 	if Y[index] == 'adenoma':
 		X = X.drop(thomasDf.columns.tolist()[index], axis=0)
 		continue
-	if Y[index] == 'control':
-		Y[index] = 'CTR'
 
 Y = [x for x in Y if x != 'adenoma']
 

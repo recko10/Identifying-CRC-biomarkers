@@ -40,4 +40,4 @@ targetsTemp = [target for target in finalFeaturesDf.Experiment]
 
 #PCA
 ml = ML()
-ml.pca(featuresDf,targetsTemp)
+ml.pca(featuresDf,targetsTemp, targets=['CRC', 'CTR'])
