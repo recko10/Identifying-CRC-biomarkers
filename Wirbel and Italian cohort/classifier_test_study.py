@@ -10,7 +10,8 @@ from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import RFE
 from sklearn.base import clone
-from taxonomicPreprocess_trial_1 import *
+from taxonomicPreprocess import *
+from taxonomicML import *
 
 #TRAIN DATA
 
@@ -121,63 +122,7 @@ for element in X_train.columns.tolist():
 	if element not in X_test.columns.tolist():
 		X_train = X_train.drop(element,axis=1)
 
-
-#Identify important features--takes a list of coefficients, a list of all the bacteria, and a prescaled feature dataframe as input
-def featureImportanceRegression(model, bacteria, X_prescale, Y):
-	importantBacteria = []
-	coefficientList = model.coef_.tolist()[0] 
-	#Identify bacteria with most impact on the model by identifying coefficients of high magnitude
-	for index in range(len(coefficientList)):
-		if coefficientList[index] < -0.40:
-			importantBacteria.append(bacteria[index])
-
-	print(f'Most impactful bacteria (coef): {importantBacteria}\n')
-	print(f'Number of most impactful bacteria (coef): {len(importantBacteria)}\n')
-
-	#Clone the model (create duplicate with same paramters but that is not fit to data)
-	model = clone(model)
-
-	#Create the RFE model and select the top 'n_features_to_select' features
-	rfe = RFE(model, n_features_to_select=50)
-	rfe.fit(X_prescale,Y)
-
-	#Get all of the features under a threshold 
-	selectedFeatures = []
-	index=0
-	for index in range(len(X_prescale.columns.tolist())):
-		if rfe.ranking_[index] < 10:
-			selectedFeatures.append(X_prescale.columns.tolist()[index])
-	print(f'Most impactful bacteria (RFE): {selectedFeatures}\n')
-	print(f'Number of most impactful bacteria (RFE): {len(selectedFeatures)}')
-
-#Logistic classifier-- takes in featuers (not scaled) and targets for both the train and test set
-def logisticRegeression(X_train, X_test, Y_train, Y_test):
-
-	#For feature selection
-	X_prescale = X_train
-	bacteria = X_prescale.columns.tolist() 
-
-	#Scale the data
-	X_train = StandardScaler().fit_transform(X_train)
-	X_test = StandardScaler().fit_transform(X_test)
-
-
-	#Initialize classifier
-	logReg = LogisticRegression(C=10, max_iter=200)
-	logReg.fit(X_train, Y_train)
-
-	#Predict
-	Y_pred = logReg.predict(X_test)
-	Y_pred_roc = logReg.decision_function(X_test)
-
-	print(f'Accuracy score: {accuracy_score(Y_test,Y_pred)}')
-	print(f'Confusion matrix: {confusion_matrix(Y_test,Y_pred)}')
-	print(f'AUROC score: {roc_auc_score(Y_test, Y_pred_roc)}\n')
-
-	#Identify important features
-	#featureImportanceRegression(logReg, bacteria, X_prescale,Y)
-
-
-logisticRegeression(X_train, X_test, Y_train, Y_test)
+ml = ML()
+ml.logisticRegeression(X_train, X_test, Y_train, Y_test)
 
 

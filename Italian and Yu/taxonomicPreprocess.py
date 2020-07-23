@@ -86,9 +86,9 @@ class preprocess:
 				df = pd.read_csv(filepath, sep='\t', engine='python') #Import files into dataframe assuming 'tab' is the separator
 				df.columns=['Microbes', 'Weights'] #Change column names
 
+				#Append weights to dictionary
 				for species in df['Microbes']:
 					if "s__" in species and "t__" not in species:
-						#Check if the current bacteria has already been logged or not
 						speciesToWeights[species].append(float(df.at[index, 'Weights']))
 					index+=1
 				
@@ -137,6 +137,17 @@ class preprocess:
 
 			runOnce = True
 		return dfList
+
+	#Convert all numbers into 'yes' or 'no' values indicating the presence of the bacteria (yes is 1 and no is 0)
+	#This method is a little slow, but it works
+	def binaryData(X, threshold):
+		X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
+		for column in X.columns.tolist():
+			for index in range(len(X)):
+				if X[column].iloc[index] < threshold:
+					X[column].iloc[index] = 0
+				else:
+					X[column].iloc[index] = 1
 
 # preprocess = preprocess()
 # df = preprocess.decompose(path='trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', out = 'nani')
