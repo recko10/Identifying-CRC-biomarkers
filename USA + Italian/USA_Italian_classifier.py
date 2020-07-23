@@ -6,14 +6,16 @@ from taxonomicML import *
 preprocess = preprocess()
 
 preprocess.decompose(path='data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', out='data/filedump/Italian')
-preprocess.decompose(path='data/YuJ_2015.metaphlan_bugs_list.stool.tsv', out= 'data/filedump/Chinese')
+preprocess.decompose(path='data/VogtmannE_2016.metaphlan_bugs_list.stool.tsv', out= 'data/filedump/USA')
 
 dfList = preprocess.standardPreprocess('data/filedump')
 
 #Declare feature dfs
-X_italian = dfList[0]
-X_chinese = dfList[1]
+X_italian = dfList[1]
+X_usa = dfList[0]
 
+print(X_italian)
+print(X_usa)
 
 #Preprocess Italian targets
 italianDf = pd.read_csv('data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', sep='\t')
@@ -31,22 +33,23 @@ for index in range(len(Y_italian)):
 Y_italian = [x for x in Y_italian if x != 'adenoma']
 
 
-#Preprocess Chinese targets
-chineseDf = pd.read_csv('data/YuJ_2015.metaphlan_bugs_list.stool.tsv', sep='\t')
+#Preprocess USA targets
+usaDf = pd.read_csv('data/VogtmannE_2016.metaphlan_bugs_list.stool.tsv', sep='\t')
 
-#Extract Chinese targets
-Y_chinese = chineseDf.iloc[3, :].tolist()
-Y_chinese.pop(0)
+Y_usa = usaDf.iloc[3, :].tolist()
+Y_usa.pop(0)
 
-#Create logistic classifier to predict on Yu
+
+for index in range(len(Y_usa)):
+	if Y_usa[index] != 'CRC' and Y_usa[index] != 'control':
+		X_usa = X_usa.drop(usaDf.columns.tolist()[index], axis=0)
+		continue
+
+Y_usa = [x for x in Y_usa if x == 'CRC' or x == 'control']
+
+#Classifier
 ml = ML()
-ml.logisticRegeression(X_italian,X_chinese,Y_italian,Y_chinese)
-
-#Create logistic classifier to predict on Italian
-#ml.logisticRegeression(X_chinese, X_italian,Y_chinese,Y_italian)
-
-#PCA
-#ml.pca(X_chinese,Y_chinese)
-
+#ml.logisticRegeression(X_italian, X_usa, Y_italian, Y_usa)
+#ml.logisticRegeression(X_usa, X_italian, Y_usa, Y_italian)
 
 

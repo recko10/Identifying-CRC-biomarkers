@@ -12,6 +12,9 @@ dfList = preprocess.standardPreprocess('data/filedump')
 X_usa = dfList[0]
 X_chinese = dfList[1]
 
+print(X_usa)
+print(X_chinese)
+
 #Preprocess Chinese targets
 chineseDf = pd.read_csv('data/YuJ_2015.metaphlan_bugs_list.stool.tsv', sep='\t')
 
