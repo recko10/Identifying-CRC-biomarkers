@@ -43,7 +43,6 @@ ml = ML()
 #ml.logisticRegeression(X_train,X_test,Y_train,Y_test)
 
 #Create logistic classifier to predict on Italian
-print(X_test)
 ml.logisticRegeression(X_test, X_train,Y_test,Y_train)
 
 
