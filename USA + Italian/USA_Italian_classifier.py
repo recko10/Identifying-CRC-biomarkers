@@ -6,13 +6,12 @@ from taxonomicML import *
 preprocess = preprocess()
 
 preprocess.decompose(path='data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', out='data/filedump/Italian')
-preprocess.decompose(path='data/VogtmannE_2016.metaphlan_bugs_list.stool.tsv', out= 'data/filedump/USA')
+preprocess.decompose(path='data/VogtmannE_2016.metaphlan_bugs_list.stool.tsv', out='data/filedump/USA')
 
 dfList = preprocess.standardPreprocess('data/filedump')
 
-#Declare feature dfs
-X_italian = dfList[1]
 X_usa = dfList[0]
+X_italian = dfList[1]
 
 print(X_italian)
 print(X_usa)
@@ -20,35 +19,43 @@ print(X_usa)
 #Preprocess Italian targets
 italianDf = pd.read_csv('data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', sep='\t')
 
-#Mark unnecessary columns and append to targets list
-Y_italian = [x for x in italianDf.iloc[3, :].tolist()]
-Y_italian.pop(0)
-
-#Clean up Italian targets
-for index in range(len(Y_italian)):
-	if Y_italian[index] == 'adenoma':
-		X_italian = X_italian.drop(italianDf.columns.tolist()[index], axis=0)
+#Fix the scrambled IDs issue
+idToTarget = {}
+for sample in italianDf.columns.tolist():
+	if sample == 'Unnamed: 0':
 		continue
+	#Remove all unrelated targets and their corresponding samples
+	if italianDf.at[3, sample] != 'CRC' and italianDf.at[3, sample] != 'control':
+		X_italian = X_italian.drop(sample, axis=0)
+		continue
+	idToTarget[sample] = italianDf.at[3, sample]
 
-Y_italian = [x for x in Y_italian if x != 'adenoma']
+Y_italian = []
+for index in X_italian.index.tolist():
+	Y_italian.append(idToTarget[index])
 
 
 #Preprocess USA targets
 usaDf = pd.read_csv('data/VogtmannE_2016.metaphlan_bugs_list.stool.tsv', sep='\t')
 
-usaDf = usaDf.drop('Unnamed: 0', axis=1)
-Y_usa = usaDf.iloc[3, :].tolist()
-
-for index in range(len(Y_usa)):
-	if Y_usa[index] != 'CRC' and Y_usa[index] != 'control':
-		X_usa = X_usa.drop(usaDf.columns.tolist()[index], axis=0)
+#Fix the scrambled IDs issue
+idToTarget = {}
+for sample in usaDf.columns.tolist():
+	if sample == 'Unnamed: 0':
 		continue
+	#Remove all unrelated targets and their corresponding samples
+	if usaDf.at[3, sample] != 'CRC' and usaDf.at[3, sample] != 'control':
+		X_usa = X_usa.drop(sample, axis=0)
+		continue
+	idToTarget[sample] = usaDf.at[3, sample]
 
-Y_usa = [x for x in Y_usa if x == 'CRC' or x == 'control']
+Y_usa = []
+for index in X_usa.index.tolist():
+	Y_usa.append(idToTarget[index])
 
 #Classifier
 ml = ML()
-ml.logisticRegeression(X_italian, X_usa, Y_italian, Y_usa)
 #ml.logisticRegeression(X_usa, X_italian, Y_usa, Y_italian)
+ml.logisticRegeression(X_italian, X_usa, Y_italian, Y_usa)
 
 

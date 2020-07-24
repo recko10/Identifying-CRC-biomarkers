@@ -34,7 +34,6 @@ Y_chinese = []
 for index in X_chinese.index.tolist():
 	Y_chinese.append(idToTarget[index])
 
-
 #Preprocess Austrian targets
 austrianDf = pd.read_csv('data/FengQ_2015.metaphlan_bugs_list.stool.tsv', sep='\t')
 
