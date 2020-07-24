@@ -37,9 +37,7 @@ for header in frenchDf.columns.tolist():
 	if 'CCIS' not in header:
 		frenchDf = frenchDf.drop(header, axis=1)
 
-
 Y_french = frenchDf.iloc[3, :].tolist()
-Y_french.pop(0)
 
 for index in range(len(Y_french)):
 	if Y_french[index] != 'CRC' and Y_french[index] != 'control':
@@ -48,7 +46,6 @@ for index in range(len(Y_french)):
 
 
 Y_french = [x for x in Y_french if x == 'CRC' or x == 'control']
-
 
 #Classifier
 ml = ML()

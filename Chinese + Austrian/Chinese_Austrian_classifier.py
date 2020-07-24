@@ -13,11 +13,13 @@ dfList = preprocess.standardPreprocess('data/filedump')
 X_austrian = dfList[0]
 X_chinese = dfList[1]
 
-print(X_austrian)
-print(X_chinese)
+X_chinese.to_csv('X_chinese.csv')
+
 
 #Preprocess Chinese targets
 chineseDf = pd.read_csv('data/YuJ_2015.metaphlan_bugs_list.stool.tsv', sep='\t')
+
+chineseDf.to_csv('chineseDf.csv')
 
 #Extract Chinese targets
 Y_chinese = chineseDf.iloc[3, :].tolist()
@@ -26,9 +28,8 @@ Y_chinese.pop(0)
 #Preprocess Austrian targets
 austrianDf = pd.read_csv('data/FengQ_2015.metaphlan_bugs_list.stool.tsv', sep='\t')
 
+austrianDf = austrianDf.drop('Unnamed: 0', axis=1)
 Y_austrian = austrianDf.iloc[3, :].tolist()
-Y_austrian.pop(0)
-
 
 for index in range(len(Y_austrian)):
 	if Y_austrian[index] != 'CRC' and Y_austrian[index] != 'control':
@@ -39,7 +40,7 @@ Y_austrian = [x for x in Y_austrian if x == 'CRC' or x == 'control']
 
 #Classifier
 ml = ML()
-#ml.logisticRegeression(X_chinese, X_austrian, Y_chinese, Y_austrian)
+ml.logisticRegeression(X_chinese, X_austrian, Y_chinese, Y_austrian)
 
 #PCA
 #ml.pca(X_austrian, Y_austrian)

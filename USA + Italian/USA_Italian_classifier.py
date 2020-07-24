@@ -36,9 +36,8 @@ Y_italian = [x for x in Y_italian if x != 'adenoma']
 #Preprocess USA targets
 usaDf = pd.read_csv('data/VogtmannE_2016.metaphlan_bugs_list.stool.tsv', sep='\t')
 
+usaDf = usaDf.drop('Unnamed: 0', axis=1)
 Y_usa = usaDf.iloc[3, :].tolist()
-Y_usa.pop(0)
-
 
 for index in range(len(Y_usa)):
 	if Y_usa[index] != 'CRC' and Y_usa[index] != 'control':
@@ -49,7 +48,7 @@ Y_usa = [x for x in Y_usa if x == 'CRC' or x == 'control']
 
 #Classifier
 ml = ML()
-#ml.logisticRegeression(X_italian, X_usa, Y_italian, Y_usa)
+ml.logisticRegeression(X_italian, X_usa, Y_italian, Y_usa)
 #ml.logisticRegeression(X_usa, X_italian, Y_usa, Y_italian)
 
 
