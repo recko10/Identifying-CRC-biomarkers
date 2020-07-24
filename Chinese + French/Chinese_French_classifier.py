@@ -21,15 +21,27 @@ for index in X_french.index.tolist():
 print(X_french)
 print(X_chinese)
 
-
 #Preprocess Chinese targets
 chineseDf = pd.read_csv('data/YuJ_2015.metaphlan_bugs_list.stool.tsv', sep='\t')
 
-#Extract Chinese targets
-Y_chinese = chineseDf.iloc[3, :].tolist()
-Y_chinese.pop(0)
+#Fix the scrambled IDs issue
+idToTarget = {}
+for sample in chineseDf.columns.tolist():
+	if sample == 'Unnamed: 0':
+		continue
+	#Remove all unrelated targets and their corresponding samples
+	if chineseDf.at[3, sample] != 'CRC' and chineseDf.at[3, sample] != 'control':
+		X_chinese = X_chinese.drop(sample, axis=0)
+		continue
+	idToTarget[sample] = chineseDf.at[3, sample]
 
-#Preprocess French targets
+Y_chinese = []
+for index in X_chinese.index.tolist():
+	Y_chinese.append(idToTarget[index])
+
+
+
+#Preprocess french targets
 frenchDf = pd.read_csv('data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', sep='\t')
 
 #Select for only french samples
@@ -37,15 +49,20 @@ for header in frenchDf.columns.tolist():
 	if 'CCIS' not in header:
 		frenchDf = frenchDf.drop(header, axis=1)
 
-Y_french = frenchDf.iloc[3, :].tolist()
-
-for index in range(len(Y_french)):
-	if Y_french[index] != 'CRC' and Y_french[index] != 'control':
-		X_french = X_french.drop(frenchDf.columns.tolist()[index], axis=0)
+#Fix the scrambled IDs issue
+idToTarget = {}
+for sample in frenchDf.columns.tolist():
+	if sample == 'Unnamed: 0':
 		continue
+	#Remove all unrelated targets and their corresponding samples
+	if frenchDf.at[3, sample] != 'CRC' and frenchDf.at[3, sample] != 'control':
+		X_french = X_french.drop(sample, axis=0)
+		continue
+	idToTarget[sample] = frenchDf.at[3, sample]
 
-
-Y_french = [x for x in Y_french if x == 'CRC' or x == 'control']
+Y_french = []
+for index in X_french.index.tolist():
+	Y_french.append(idToTarget[index])
 
 #Classifier
 ml = ML()

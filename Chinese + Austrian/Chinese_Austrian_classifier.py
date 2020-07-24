@@ -13,35 +13,48 @@ dfList = preprocess.standardPreprocess('data/filedump')
 X_austrian = dfList[0]
 X_chinese = dfList[1]
 
-X_chinese.to_csv('X_chinese.csv')
-
+print(X_austrian)
+print(X_chinese)
 
 #Preprocess Chinese targets
 chineseDf = pd.read_csv('data/YuJ_2015.metaphlan_bugs_list.stool.tsv', sep='\t')
 
-chineseDf.to_csv('chineseDf.csv')
+#Fix the scrambled IDs issue
+idToTarget = {}
+for sample in chineseDf.columns.tolist():
+	if sample == 'Unnamed: 0':
+		continue
+	#Remove all unrelated targets and their corresponding samples
+	if chineseDf.at[3, sample] != 'CRC' and chineseDf.at[3, sample] != 'control':
+		X_chinese = X_chinese.drop(sample, axis=0)
+		continue
+	idToTarget[sample] = chineseDf.at[3, sample]
 
-#Extract Chinese targets
-Y_chinese = chineseDf.iloc[3, :].tolist()
-Y_chinese.pop(0)
+Y_chinese = []
+for index in X_chinese.index.tolist():
+	Y_chinese.append(idToTarget[index])
+
 
 #Preprocess Austrian targets
 austrianDf = pd.read_csv('data/FengQ_2015.metaphlan_bugs_list.stool.tsv', sep='\t')
 
-austrianDf = austrianDf.drop('Unnamed: 0', axis=1)
-Y_austrian = austrianDf.iloc[3, :].tolist()
-
-for index in range(len(Y_austrian)):
-	if Y_austrian[index] != 'CRC' and Y_austrian[index] != 'control':
-		X_austrian = X_austrian.drop(austrianDf.columns.tolist()[index], axis=0)
+#Fix the scrambled IDs issue
+idToTarget = {}
+for sample in austrianDf.columns.tolist():
+	if sample == 'Unnamed: 0':
 		continue
+	#Remove all unrelated targets and their corresponding samples
+	if austrianDf.at[3, sample] != 'CRC' and austrianDf.at[3, sample] != 'control':
+		X_austrian = X_austrian.drop(sample, axis=0)
+		continue
+	idToTarget[sample] = austrianDf.at[3, sample]
 
-Y_austrian = [x for x in Y_austrian if x == 'CRC' or x == 'control']
+Y_austrian = []
+for index in X_austrian.index.tolist():
+	Y_austrian.append(idToTarget[index])
 
 #Classifier
 ml = ML()
 ml.logisticRegeression(X_chinese, X_austrian, Y_chinese, Y_austrian)
 
-#PCA
-#ml.pca(X_austrian, Y_austrian)
 

@@ -5,7 +5,7 @@ import shutil
 class preprocess:
 
 	#Takes as input a curatedMetagenomicData abundance file/dataframe (with no modifications) and breaks it into separate files, each file representing 1 sample's abundances
-	def decompose(self, path='', out='', dataframe=None):
+	def decompose(self, path='', out='decomp', dataframe=None):
 
 		#Option to pass a dataframe as a parameter
 		if dataframe != None:
@@ -29,11 +29,10 @@ class preprocess:
 		#Drop unnamed column
 		df = df.drop('Unnamed: 0', axis=1)
 
-		#Make folder (titled with the file name without the metaphlan_bugs.stool.tsv) to store output files
-		#folderPath = path.split('/')[-1].split('.')[0]
-		
+		#Make folder to store output files		
 		folderPath=out 
 
+		#If the folder exists, replace it
 		if os.path.exists(folderPath):
 			shutil.rmtree(folderPath)
 		os.makedirs(folderPath)
@@ -41,7 +40,6 @@ class preprocess:
 		#Create separate files
 		for column in df.columns.tolist():
 			df[column].to_csv(folderPath + os.sep + column + '.tsv', sep='\t')
-
 
 	#Goes through directory with folders and returns multiple abundance dataframes all following the same superset and format
 	def standardPreprocess(self, directory):
@@ -54,10 +52,12 @@ class preprocess:
 		for subdir, dirs, files in os.walk(directory):
 			for file in files:
 				filepath = subdir + os.sep + file
+
 				if file == '.DS_Store':
 					continue
 
 				fileNames.append(file)
+
 				#File should always be a tsv
 				df = pd.read_csv(filepath, sep='\t', engine='python') #Import files into dataframe assuming 'tab' is the separator
 				df.columns=['Microbes', 'Weights'] #Change column names
@@ -72,7 +72,6 @@ class preprocess:
 		subdirList = []
 		#Append weights to dictionary
 		for subdir, dirs, files in os.walk(directory):
-
 			for file in files:
 				filepath = subdir + os.sep + file
 
@@ -99,7 +98,6 @@ class preprocess:
 
 				numberOfLoops+=1
 				index = 0
-
 
 		#Create dataframe from the species : weights dictionary
 		finalDf = pd.DataFrame.from_dict(speciesToWeights)
@@ -141,7 +139,6 @@ class preprocess:
 	#Convert all numbers into 'yes' or 'no' values indicating the presence of the bacteria (yes is 1 and no is 0)
 	#This method is a little slow, but it works
 	def binaryData(X, threshold):
-		X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
 		for column in X.columns.tolist():
 			for index in range(len(X)):
 				if X[column].iloc[index] < threshold:
