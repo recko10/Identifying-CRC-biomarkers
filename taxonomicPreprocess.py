@@ -44,7 +44,7 @@ class preprocess:
 
 
 	#Goes through directory with folders and returns multiple abundance dataframes all following the same superset and format
-	def standardPreprocess(self, directory):
+	def standardPreprocess(self, directory, keepFiles=False):
 
 		speciesToWeights = {} #Dict that will have species as keys and a list taxonomic weights as values
 		speciesNotPresent = []
@@ -149,6 +149,12 @@ class preprocess:
 >>>>>>> dev
 
 			runOnce = True
+
+		#Remove folder if user desires
+		if keepFiles == False:
+			if os.path.exists(directory):
+				shutil.rmtree(directory)
+
 		return dfList
 
 	#Convert all numbers into 'yes' or 'no' values indicating the presence of the bacteria (yes is 1 and no is 0)
@@ -163,7 +169,7 @@ class preprocess:
 					X[column].iloc[index] = 1
 
 # preprocess = preprocess()
-# df = preprocess.decompose(path='trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', out = 'nani')
+# df = preprocess.decompose(path='data_container/ThomasAM_italian.tsv', out = 'nani')
 
 # dfList = preprocess.standardPreprocess('nani')
 # print(dfList[0])
