@@ -8,7 +8,7 @@ preprocess = preprocess()
 
 preprocess.decompose(path='data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', out='data/filedump/German')
 
-dfList = preprocess.standardPreprocess('data/filedump')
+dfList = preprocess.standardPreprocess('data/filedump', keepFiles=False)
 
 X_german = dfList[0]
 
@@ -48,6 +48,6 @@ X_train, X_test, Y_train, Y_test = train_test_split(X_german, Y_german, test_siz
 
 #Classifier
 ml = ML()
-ml.logisticRegeression(X_train, X_test, Y_train, Y_test)
+ml.randomForest(X_train, X_test, Y_train, Y_test)
 
 

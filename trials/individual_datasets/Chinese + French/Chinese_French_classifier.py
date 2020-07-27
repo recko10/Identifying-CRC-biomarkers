@@ -8,7 +8,7 @@ preprocess = preprocess()
 preprocess.decompose(path='data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', out='data/filedump/French')
 preprocess.decompose(path='data/YuJ_2015.metaphlan_bugs_list.stool.tsv', out='data/filedump/Chinese')
 
-dfList = preprocess.standardPreprocess('data/filedump')
+dfList = preprocess.standardPreprocess('data/filedump',keepFiles=False)
 
 X_french = dfList[0]
 X_chinese = dfList[1]
@@ -39,8 +39,6 @@ Y_chinese = []
 for index in X_chinese.index.tolist():
 	Y_chinese.append(idToTarget[index])
 
-
-
 #Preprocess french targets
 frenchDf = pd.read_csv('data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', sep='\t')
 
@@ -66,6 +64,6 @@ for index in X_french.index.tolist():
 
 #Classifier
 ml = ML()
-ml.logisticRegeression(X_chinese, X_french, Y_chinese, Y_french)
-
+#ml.randomForest(X_chinese, X_french, Y_chinese, Y_french)
+ml.randomForest(X_french, X_chinese, Y_french, Y_chinese)
 

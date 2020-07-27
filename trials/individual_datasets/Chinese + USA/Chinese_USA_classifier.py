@@ -8,7 +8,7 @@ preprocess = preprocess()
 preprocess.decompose(path='data/VogtmannE_2016.metaphlan_bugs_list.stool.tsv', out='data/filedump/USA')
 preprocess.decompose(path='data/YuJ_2015.metaphlan_bugs_list.stool.tsv', out='data/filedump/Chinese')
 
-dfList = preprocess.standardPreprocess('data/filedump')
+dfList = preprocess.standardPreprocess('data/filedump', keepFiles=False)
 
 X_usa = dfList[0]
 X_chinese = dfList[1]
@@ -55,6 +55,6 @@ for index in X_usa.index.tolist():
 
 #Classifier
 ml = ML()
-#ml.logisticRegeression(X_chinese, X_usa, Y_chinese, Y_usa)
-ml.logisticRegeression(X_usa, X_chinese, Y_usa, Y_chinese)
+ml.randomForest(X_chinese, X_usa, Y_chinese, Y_usa)
+#ml.randomForest(X_usa, X_chinese, Y_usa, Y_chinese)
 

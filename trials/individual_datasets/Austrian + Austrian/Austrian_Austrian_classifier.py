@@ -6,9 +6,9 @@ from sklearn.model_selection import train_test_split
 #Preprocess features
 preprocess = preprocess()
 
-preprocess.decompose(path='data/FengQ_austrian.tsv', out='data/filedump/Chinese')
+preprocess.decompose(path='data/FengQ_austrian.tsv', out='data/filedump/Austrian')
 
-dfList = preprocess.standardPreprocess('data/filedump')
+dfList = preprocess.standardPreprocess('data/filedump', keepFiles=False)
 
 X_austrian = dfList[0]
 
@@ -37,6 +37,6 @@ X_train, X_test, Y_train, Y_test = train_test_split(X_austrian, Y_austrian, test
 
 #Classifier
 ml = ML()
-ml.logisticRegeression(X_train, X_test, Y_train, Y_test)
+ml.randomForest(X_train, X_test, Y_train, Y_test)
 
 

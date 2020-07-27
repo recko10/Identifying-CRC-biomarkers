@@ -11,7 +11,7 @@ preprocess.decompose(path='data/FengQ_austrian.tsv', out='data/filedump/Austrian
 preprocess.decompose(path='data/ThomasAM_italian.tsv', out='data/filedump/Italian')
 preprocess.decompose(path='data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', out='data/filedump/French_German')
 
-dfList = preprocess.standardPreprocess('data/filedump')
+dfList = preprocess.standardPreprocess('data/filedump', keepFiles=False)
 
 X_austrian = dfList[0]
 X_italian = dfList[1]
@@ -83,14 +83,16 @@ for index in X_french_german.index.tolist():
 # X_european = X_austrian.append([X_italian, X_french_german])
 # Y_european = Y_austrian + Y_italian + Y_french_german
 
+#LOSO Austrian
 X_european = X_italian.append([X_french_german])
 Y_european = Y_italian + Y_french_german
 
 #Cross validation
-#X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
+# X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
 
 #Classifier
 ml = ML()
+#ml.randomForest(X_train, X_test, Y_train, Y_test)
 ml.randomForest(X_european, X_austrian, Y_european, Y_austrian)
 
 
