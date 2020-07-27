@@ -77,6 +77,8 @@ for index in X_french_german.index.tolist():
 	Y_french_german.append(idToTarget[index])
 
 
+#VERIFY THIS FINDING BY CHECKING WHETHER THE TARGETS ARE BEING ASSIGNED PROPER
+
 #Combine datasets
 # X_european = X_austrian.append([X_italian, X_french_german])
 # Y_european = Y_austrian + Y_italian + Y_french_german
@@ -89,6 +91,6 @@ Y_european = Y_italian + Y_french_german
 
 #Classifier
 ml = ML()
-ml.logisticRegeression(X_european, X_austrian, Y_european, Y_austrian)
+ml.randomForest(X_european, X_austrian, Y_european, Y_austrian)
 
 

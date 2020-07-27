@@ -10,6 +10,7 @@ from sklearn.decomposition import PCA
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import RFE
 from sklearn.base import clone
+from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt 
 
 class ML:
@@ -78,6 +79,22 @@ class ML:
 		ax.grid()
 		plt.show()
 		return principalDf
+
+	def randomForest(self, X_train, X_test, Y_train, Y_test):
+		#Scale the data
+		X_train = StandardScaler().fit_transform(X_train)
+		X_test = StandardScaler().fit_transform(X_test)
+
+		#Initialize classifier
+		rf = RandomForestClassifier()
+		rf.fit(X_train, Y_train)
+
+		#Predict
+		y_pred = rf.predict(X_test)
+
+		print(f'Accuracy score: {accuracy_score(Y_test,y_pred)}')
+		print(f'Confusion matrix: {confusion_matrix(Y_test,y_pred)}')
+		print(f'AUROC score: {roc_auc_score(Y_test, rf.predict_proba(X_test)[:,1])}\n')
 
 	def kneighbors(self, X_train, X_test, Y_train, Y_test):
 
