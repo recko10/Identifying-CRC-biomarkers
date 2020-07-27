@@ -8,7 +8,7 @@ preprocess = preprocess()
 
 preprocess.decompose(path='data/YuJ_2015.metaphlan_bugs_list.stool.tsv', out='data/filedump/Chinese')
 
-dfList = preprocess.standardPreprocess('data/filedump', keepFiles=True)
+dfList = preprocess.standardPreprocess('data/filedump')
 
 X_chinese = dfList[0]
 
