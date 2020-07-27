@@ -120,10 +120,8 @@ class preprocess:
 		#Split dataframe
 		dfList = []
 		subdirFileCount=0
-		runOnce = False
 		for subdir in subdirList:
 			
-			previous=subdirFileCount
 			subdirFileCount=0
 
 			for file in os.listdir(subdir):
@@ -131,12 +129,8 @@ class preprocess:
 					continue
 				subdirFileCount+=1
 
-			if runOnce == False:
-				dfList.append(finalDf.iloc[:subdirFileCount,:])
-			if runOnce == True:
-				dfList.append(finalDf.iloc[previous:previous+subdirFileCount, :])
-
-			runOnce = True
+			dfList.append(finalDf.iloc[:subdirFileCount, :])
+			finalDf = finalDf.iloc[subdirFileCount:,:]
 
 		#Remove folder if user desires
 		if keepFiles == False:
