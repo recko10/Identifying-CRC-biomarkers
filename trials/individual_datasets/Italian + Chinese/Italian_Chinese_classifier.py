@@ -8,7 +8,7 @@ preprocess = preprocess()
 preprocess.decompose(path='data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', out='data/filedump/Italian')
 preprocess.decompose(path='data/YuJ_2015.metaphlan_bugs_list.stool.tsv', out='data/filedump/Chinese')
 
-dfList = preprocess.standardPreprocess('data/filedump')
+dfList = preprocess.standardPreprocess('data/filedump', keepFiles=False)
 
 X_italian = dfList[0]
 X_chinese = dfList[1]
@@ -54,5 +54,5 @@ for index in X_italian.index.tolist():
 
 #Classifier
 ml = ML()
-#ml.logisticRegeression(X_chinese, X_italian, Y_chinese, Y_italian)
-#ml.logisticRegeression(X_italian, X_chinese, Y_italian, Y_chinese)
+#ml.randomForest(X_chinese, X_italian, Y_chinese, Y_italian)
+#ml.randomForest(X_italian, X_chinese, Y_italian, Y_chinese)

@@ -8,7 +8,7 @@ preprocess = preprocess()
 
 preprocess.decompose(path='data/Vogtmann_USA.tsv', out='data/filedump/USA')
 
-dfList = preprocess.standardPreprocess('data/filedump')
+dfList = preprocess.standardPreprocess('data/filedump', keepFiles=False)
 
 X_usa = dfList[0]
 
@@ -37,6 +37,6 @@ X_train, X_test, Y_train, Y_test = train_test_split(X_usa, Y_usa, test_size = 0.
 
 #Classifier
 ml = ML()
-ml.logisticRegeression(X_train, X_test, Y_train, Y_test)
+ml.randomForest(X_train, X_test, Y_train, Y_test)
 
 
