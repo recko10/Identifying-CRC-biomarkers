@@ -7,6 +7,16 @@ class preprocess:
 	#Takes as input a curatedMetagenomicData abundance file/dataframe (with no modifications) and breaks it into separate files, each file representing 1 sample's abundances
 	def decompose(self, path='', out='', dataframe=None):
 
+		folderPath=out 
+
+		#If folder already exists do not make the directory and end the method
+		if os.path.exists(folderPath):
+			#shutil.rmtree(folderPath)
+			print('Folder already exists!')
+			return
+		else:
+			os.makedirs(folderPath)
+
 		#Option to pass a dataframe as a parameter
 		if dataframe != None:
 			df = dataframe
@@ -28,23 +38,14 @@ class preprocess:
 
 		#Drop unnamed column
 		df = df.drop('Unnamed: 0', axis=1)
-
-		#Make folder (titled with the file name without the metaphlan_bugs.stool.tsv) to store output files
-		#folderPath = path.split('/')[-1].split('.')[0]
-		
-		folderPath=out 
-
-		if os.path.exists(folderPath):
-			shutil.rmtree(folderPath)
-		os.makedirs(folderPath)
-		
+	
 		#Create separate files
 		for column in df.columns.tolist():
 			df[column].to_csv(folderPath + os.sep + column + '.tsv', sep='\t')
 
 
 	#Goes through directory with folders and returns multiple abundance dataframes all following the same superset and format
-	def standardPreprocess(self, directory, keepFiles=False):
+	def standardPreprocess(self, directory, keepFiles=True):
 
 		speciesToWeights = {} #Dict that will have species as keys and a list taxonomic weights as values
 		speciesNotPresent = []
@@ -59,7 +60,7 @@ class preprocess:
 
 				fileNames.append(file)
 				#File should always be a tsv
-				df = pd.read_csv(filepath, sep='\t', engine='python') #Import files into dataframe assuming 'tab' is the separator
+				df = pd.read_csv(filepath, sep='\t', engine='c') #Import files into dataframe assuming 'tab' is the separator
 				df.columns=['Microbes', 'Weights'] #Change column names
 				#Iterate through species in microbes
 				for species in df['Microbes']:
@@ -83,7 +84,7 @@ class preprocess:
 					subdirList.append(subdir)
 
 				#File should always be a tsv
-				df = pd.read_csv(filepath, sep='\t', engine='python') #Import files into dataframe assuming 'tab' is the separator
+				df = pd.read_csv(filepath, sep='\t', engine='c') #Import files into dataframe assuming 'tab' is the separator
 				df.columns=['Microbes', 'Weights'] #Change column names
 
 				#Append weights to dictionary
@@ -141,7 +142,7 @@ class preprocess:
 		if keepFiles == False:
 			if os.path.exists(directory):
 				shutil.rmtree(directory)
-
+				
 		return dfList
 
 	#Convert all numbers into 'yes' or 'no' values indicating the presence of the bacteria (yes is 1 and no is 0)
