@@ -78,8 +78,6 @@ for index in X_french_german.index.tolist():
 	Y_french_german.append(idToTarget[index])
 
 
-#VERIFY THIS FINDING BY CHECKING WHETHER THE TARGETS ARE BEING ASSIGNED PROPER
-
 #Combine all datasets
 X_european = X_austrian.append([X_italian, X_french_german])
 Y_european = Y_austrian + Y_italian + Y_french_german
@@ -90,7 +88,7 @@ Y_european = Y_austrian + Y_italian + Y_french_german
 
 
 #Cross validation
-X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
+#X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
 
 #Classifier
 ml = ML()
