@@ -12,25 +12,20 @@ from sklearn.feature_selection import RFE
 from sklearn.base import clone
 from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt 
+import numpy as np
+import seaborn as sns
+from string import ascii_letters
+from sklearn.feature_selection import SelectFromModel
 
 class ML:
 	#Identify important features--takes a list of coefficients, a list of all the bacteria, a prescaled feature dataframe, and its corresponding targets as input
-	def featureImportanceRegression(self, model, bacteria, X_prescale, Y):
-		importantBacteria = []
-		coefficientList = model.coef_.tolist()[0] 
-		#Identify bacteria with most impact on the model by identifying coefficients of high magnitude
-		for index in range(len(coefficientList)):
-			if coefficientList[index] < -0.40:
-				importantBacteria.append(bacteria[index])
-
-		print(f'Most impactful bacteria (coef): {importantBacteria}')
-		print(f'Number of most impactful bacteria (coef): {len(importantBacteria)}\n')
+	def featureImportanceRegression(self, model, X_prescale, Y):
 
 		#Clone the model (create duplicate with same paramters but that is not fit to data)
 		model = clone(model)
 
 		#Create the RFE model and select the top 'n_features_to_select' features
-		rfe = RFE(model, n_features_to_select=50)
+		rfe = RFE(model, n_features_to_select=30)
 		X_scale = StandardScaler().fit_transform(X_prescale)
 
 		rfe.fit(X_scale,Y)
@@ -44,6 +39,7 @@ class ML:
 		print(f'Most impactful bacteria (RFE): {selectedFeatures}')
 		print(f'Number of most impactful bacteria (RFE): {len(selectedFeatures)}\n')
 
+		return selectedFeatures
 
 	#Takes as input a features df and a list of corresponding targets
 	def pca(self, X, Y, targets=['CRC','control'], colors=['r','b']):
@@ -80,7 +76,51 @@ class ML:
 		plt.show()
 		return principalDf
 
+	def selectFromModel(self, X_train, Y_train):
+		selectedFeatures = []
+		#Create model
+		sfm = SelectFromModel(estimator=RandomForestClassifier().fit(X_train,Y_train), max_features=30)
+		#Train the model to select the features
+		sfm.fit(X_train, Y_train)
+		# Print the names of the most important features
+		for feature_list_index in sfm.get_support(indices=True):
+			selectedFeatures.append(X_train.columns.tolist()[feature_list_index])
+
+		return selectedFeatures
+
+	#Takes a dataframe as input and a list of corresponding targets. Outputs a diagonal correlation matrix with the top features from the dataframe.
+	def correlationMatrix(self, d, Y_train):
+
+		ml = ML()
+		#Find important features
+		selectedFeatures = ml.selectFromModel(d, Y_train)
+
+		#Remove unimportant features
+		for header in d.columns.tolist():
+			if header not in selectedFeatures:
+				d = d.drop(header,axis=1)
+
+		# Compute the correlation matrix
+		corr = d.corr()
+		# Generate a mask for the upper triangle
+		mask = np.triu(np.ones_like(corr, dtype=np.bool))
+		# Set up the matplotlib figure
+		f, ax = plt.subplots(figsize=(15, 11)) #original figsize = (11,9)
+		# Generate a custom diverging colormap
+		cmap = sns.diverging_palette(220, 10, as_cmap=True)
+		# Draw the heatmap with the mask and correct aspect ratio
+		sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
+		            square=True, linewidths=.5, cbar_kws={"shrink": .5})
+
+		ax.figure.subplots_adjust(bottom = 0.3)
+		plt.show()
+
 	def randomForest(self, X_train, X_test, Y_train, Y_test):
+		ml = ML()
+
+		#Save the pandas dataframe before it gets scaled
+		X_train_prescale = X_train
+
 		#Scale the data
 		X_train = StandardScaler().fit_transform(X_train)
 		X_test = StandardScaler().fit_transform(X_test)
@@ -95,6 +135,10 @@ class ML:
 		print(f'Accuracy score: {accuracy_score(Y_test,y_pred)}')
 		print(f'Confusion matrix: {confusion_matrix(Y_test,y_pred)}')
 		print(f'AUROC score: {roc_auc_score(Y_test, rf.predict_proba(X_test)[:,1])}\n')
+
+		#Get top features
+		selectedFeatures = ml.selectFromModel(X_train_prescale, Y_train)
+		print(selectedFeatures)
 
 	def kneighbors(self, X_train, X_test, Y_train, Y_test):
 
