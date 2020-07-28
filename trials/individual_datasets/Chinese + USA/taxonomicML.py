@@ -16,30 +16,9 @@ import numpy as np
 import seaborn as sns
 from string import ascii_letters
 from sklearn.feature_selection import SelectFromModel
+from sklearn.metrics import classification_report
 
 class ML:
-	#Identify important features--takes a list of coefficients, a list of all the bacteria, a prescaled feature dataframe, and its corresponding targets as input
-	def featureImportanceRegression(self, model, X_prescale, Y):
-
-		#Clone the model (create duplicate with same paramters but that is not fit to data)
-		model = clone(model)
-
-		#Create the RFE model and select the top 'n_features_to_select' features
-		rfe = RFE(model, n_features_to_select=30)
-		X_scale = StandardScaler().fit_transform(X_prescale)
-
-		rfe.fit(X_scale,Y)
-
-		#Get all of the features under a threshold 
-		selectedFeatures = []
-		index=0
-		for index in range(len(X_prescale.columns.tolist())):
-			if rfe.ranking_[index] < 10:
-				selectedFeatures.append(X_prescale.columns.tolist()[index])
-		print(f'Most impactful bacteria (RFE): {selectedFeatures}')
-		print(f'Number of most impactful bacteria (RFE): {len(selectedFeatures)}\n')
-
-		return selectedFeatures
 
 	#Takes as input a features df and a list of corresponding targets
 	def pca(self, X, Y, targets=['CRC','control'], colors=['r','b']):
@@ -76,15 +55,24 @@ class ML:
 		plt.show()
 		return principalDf
 
-	def selectFromModel(self, X_train, Y_train):
+	#Selects the top 30 features from a given fitted model
+	def selectFromModel(self, model, X_train, Y_train):
+
+		headers = X_train.columns.tolist()
 		selectedFeatures = []
+
 		#Create model
-		sfm = SelectFromModel(estimator=RandomForestClassifier().fit(X_train,Y_train), max_features=30)
+		sfm = SelectFromModel(estimator=model, max_features=30)
+
+		#Scale the data
+		X_train = StandardScaler().fit_transform(X_train)
+
 		#Train the model to select the features
 		sfm.fit(X_train, Y_train)
+
 		# Print the names of the most important features
 		for feature_list_index in sfm.get_support(indices=True):
-			selectedFeatures.append(X_train.columns.tolist()[feature_list_index])
+			selectedFeatures.append(headers[feature_list_index])
 
 		return selectedFeatures
 
@@ -93,7 +81,7 @@ class ML:
 
 		ml = ML()
 		#Find important features
-		selectedFeatures = ml.selectFromModel(d, Y_train)
+		selectedFeatures = ml.selectFromModel(RandomForestClassifier().fit(d,Y_train), d, Y_train)
 
 		#Remove unimportant features
 		for header in d.columns.tolist():
@@ -137,25 +125,13 @@ class ML:
 		print(f'AUROC score: {roc_auc_score(Y_test, rf.predict_proba(X_test)[:,1])}\n')
 
 		#Get top features
-		selectedFeatures = ml.selectFromModel(X_train_prescale, Y_train)
+		selectedFeatures = ml.selectFromModel(rf, X_train_prescale, Y_train)
 		print(selectedFeatures)
 
-	def kneighbors(self, X_train, X_test, Y_train, Y_test):
+		#Print classification report
+		print(classification_report(Y_test, y_pred, target_names=['CRC','control']))
 
-		X_train = StandardScaler().fit_transform(X_train) #Scale the data
-		X_test= StandardScaler().fit_transform(X_test) #Scale the data
-
-		#Initialize classifier
-		kn = KNeighborsClassifier(n_neighbors=3)
-		kn.fit(X_train, Y_train)
-
-		#Predict
-		y_pred = kn.predict(X_test)
-		y_pred_roc = kn.decision_function(X_test)
-
-		print(f'Accuracy score: {accuracy_score(Y_test,y_pred)}')
-		print(f'Confusion matrix: {confusion_matrix(Y_test,y_pred)}')
-		print(f'AUROC score: {roc_auc_score(Y_test, y_pred_roc)}\n')
+		return y_pred
 
 	def logisticRegeression(self, X_train, X_test, Y_train, Y_test):
 		#Scale and create splits
@@ -180,41 +156,17 @@ class ML:
 		print(f'Confusion matrix: {confusion_matrix(Y_test,y_pred)}')
 		print(f'AUROC score: {roc_auc_score(Y_test, y_pred_roc)}\n')
 
-		#Identify important features for both the train and test sets
-
 		ml = ML()
 
-		print('Train data feature importance information: \n')
-		ml.featureImportanceRegression(logReg, bacteriaTrain, X_prescale_train, Y_train)
+		#Get top features
+		selectedFeatures = ml.selectFromModel(logReg, X_prescale_train, Y_train)
+		print(selectedFeatures)
 
-		print('Test data feature importance information: \n')
-		ml.featureImportanceRegression(logReg, bacteriaTest, X_prescale_test, Y_test)
+		#Print classification report
+		print(classification_report(Y_test, y_pred, target_names=['CRC','control']))
 
-	def lassoRegression(self, X_train, X_test, Y_train, Y_test):
-		X = StandardScaler().fit_transform(X) #Scale the data
-		X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33) #Train-test split
+		return y_pred
 
-		#Make targets 1s and 0s
-		for index in range(len(y_train)):
-			if y_train[index] == 'CRC':
-				y_train[index] = 1
-			if y_train[index] == 'CTR':
-				y_train[index] = 0
 
-		#Make targets 1s and 0s
-		for index in range(len(y_test)):
-			if y_test[index] == 'CRC':
-				y_test[index] = 1
-			if y_test[index] == 'CTR':
-				y_test[index] = 0
 
-		#Create model and fit data
-		lasso = Lasso()
-		lasso.fit(X_train, y_train)
-
-		#Predict
-		y_pred = lasso.predict(X_test)
-
-		print(f'Accuracy score: {accuracy_score(Y_test,y_pred)}')
-		print(f'Confusion matrix: {confusion_matrix(Y_test,y_pred)}')
-		print(f'AUROC score: {roc_auc_score(Y_test, y_pred_roc)}\n')
+	
