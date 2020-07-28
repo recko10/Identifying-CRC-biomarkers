@@ -62,7 +62,7 @@ class ML:
 		selectedFeatures = []
 
 		#Create model
-		sfm = SelectFromModel(estimator=model, max_features=30)
+		sfm = SelectFromModel(estimator=model, max_features=30) 
 
 		#Scale the data
 		X_train = StandardScaler().fit_transform(X_train)
