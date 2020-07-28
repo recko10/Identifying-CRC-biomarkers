@@ -130,7 +130,7 @@ class ML:
 
 		#Print classification report
 		print(classification_report(Y_test, y_pred, target_names=['CRC','control']))
-
+		
 		return y_pred
 
 	def logisticRegeression(self, X_train, X_test, Y_train, Y_test):

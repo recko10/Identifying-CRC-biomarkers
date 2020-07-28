@@ -11,14 +11,18 @@ preprocess = preprocess()
 preprocess.decompose(path='data/FengQ_austrian.tsv', out='data/filedump/Austrian')
 preprocess.decompose(path='data/ThomasAM_italian.tsv', out='data/filedump/Italian')
 preprocess.decompose(path='data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', out='data/filedump/French_German')
+preprocess.decompose(path='data/Yu_china.tsv', out='data/filedump/Chinese')
 
 dfList = preprocess.standardPreprocess('data/filedump', keepFiles=False)
 
 X_austrian = dfList[0]
 X_italian = dfList[1]
-X_french_german = dfList[2]
+X_chinese = dfList[2]
+X_french_german = dfList[3]
+
 print(X_austrian)
 print(X_italian)
+print(X_chinese)
 print(X_french_german)
 
 #Preprocess Austrian targets
@@ -78,24 +82,49 @@ for index in X_french_german.index.tolist():
 	Y_french_german.append(idToTarget[index])
 
 
-#VERIFY THIS FINDING BY CHECKING WHETHER THE TARGETS ARE BEING ASSIGNED PROPER
+#Preprocess Chinese targets
+chineseDf = pd.read_csv('data/Yu_china.tsv', sep='\t')
 
-#Combine all datasets
-X_european = X_austrian.append([X_italian, X_french_german])
-Y_european = Y_austrian + Y_italian + Y_french_german
+#Fix the scrambled IDs issue
+idToTarget = {}
+for sample in chineseDf.columns.tolist():
+	if sample == 'Unnamed: 0':
+		continue
+	#Remove all unrelated targets and their corresponding samples
+	if chineseDf.at[3, sample] != 'CRC' and chineseDf.at[3, sample] != 'control':
+		X_chinese = X_chinese.drop(sample, axis=0)
+		continue
+	idToTarget[sample] = chineseDf.at[3, sample]
+
+Y_chinese = []
+for index in X_chinese.index.tolist():
+	Y_chinese.append(idToTarget[index])
+
+
+#Combine all European datasets
+# X_european = X_austrian.append([X_italian, X_french_german])
+# Y_european = Y_austrian + Y_italian + Y_french_german
 
 #LOSO Austrian
 # X_european = X_italian.append([X_french_german])
 # Y_european = Y_italian + Y_french_german
 
+#LOSO Italian
+# X_european = X_austrian.append([X_french_german])
+# Y_european = Y_austrian + Y_french_german
+
+#LOSO French and German
+X_european = X_austrian.append([X_italian])
+Y_european = Y_austrian + Y_italian
 
 #Cross validation
-X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
+#X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
 
 #Classifier
 ml = ML()
 #ml.randomForest(X_train, X_test, Y_train, Y_test)
-#ml.randomForest(X_european, X_austrian, Y_european, Y_austrian)
+#ml.randomForest(X_european, X_french_german, Y_european, Y_french_german)
+ml.logisticRegeression(X_european, X_french_german, Y_european, Y_french_german)
 
 #Feature selection
 #selectedFeatures = ml.selectFromModel(X_european, Y_european)
