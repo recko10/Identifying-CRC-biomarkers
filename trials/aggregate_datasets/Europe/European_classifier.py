@@ -2,6 +2,7 @@ import pandas as pd
 from taxonomicPreprocess import *
 from taxonomicML import *
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 
 
 #Preprocess features
@@ -79,20 +80,27 @@ for index in X_french_german.index.tolist():
 
 #VERIFY THIS FINDING BY CHECKING WHETHER THE TARGETS ARE BEING ASSIGNED PROPER
 
-#Combine datasets
-# X_european = X_austrian.append([X_italian, X_french_german])
-# Y_european = Y_austrian + Y_italian + Y_french_german
+#Combine all datasets
+X_european = X_austrian.append([X_italian, X_french_german])
+Y_european = Y_austrian + Y_italian + Y_french_german
 
 #LOSO Austrian
-X_european = X_italian.append([X_french_german])
-Y_european = Y_italian + Y_french_german
+# X_european = X_italian.append([X_french_german])
+# Y_european = Y_italian + Y_french_german
+
 
 #Cross validation
-# X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
+X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
 
 #Classifier
 ml = ML()
 #ml.randomForest(X_train, X_test, Y_train, Y_test)
-ml.randomForest(X_european, X_austrian, Y_european, Y_austrian)
+#ml.randomForest(X_european, X_austrian, Y_european, Y_austrian)
+
+#Feature selection
+#selectedFeatures = ml.selectFromModel(X_european, Y_european)
+
+#Create and plot a diagonal correlation matrix
+#ml.correlationMatrix(X_european, Y_european)
 
 
