@@ -44,7 +44,7 @@ idToTarget = {}
 for sample in japaneseMetadataDf.index.tolist():
 	#Remove all unrelated targets and their corresponding samples
 	if 'CRC' in japaneseMetadataDf.at[sample,'host_disease_stat']:
-		idToTarget[sample] = japaneseMetadataDf.at[sample, 'host_disease_stat'].split('(', 1)[0]
+		idToTarget[sample] = japaneseMetadataDf.at[sample, 'host_disease_stat'].split(' (', 1)[0]
 
 	if 'Healthy control' in japaneseMetadataDf.at[sample, 'host_disease_stat']:
 		idToTarget[sample] = japaneseMetadataDf.at[sample, 'host_disease_stat']
@@ -68,7 +68,7 @@ X_train, X_test, Y_train, Y_test = train_test_split(X_japanese, Y_japanese, test
 
 #Classifier
 ml = ML()
-#ml.randomForest(X_train, X_test, Y_train, Y_test)
-ml.logisticRegeression(X_train, X_test, Y_train, Y_test)
+ml.randomForest(X_train, X_test, Y_train, Y_test)
+#ml.logisticRegeression(X_train, X_test, Y_train, Y_test)
 
 
