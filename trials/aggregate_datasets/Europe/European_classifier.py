@@ -101,9 +101,21 @@ for index in X_chinese.index.tolist():
 	Y_chinese.append(idToTarget[index])
 
 
+# ##PCA with disease + geography preprocessing
+# for index in range(len(Y_italian)):
+# 	Y_italian[index] = Y_italian[index] + ' Italian'
+
+# for index in range(len(Y_french_german)):
+# 	Y_french_german[index] = Y_french_german[index] + ' French_German'
+
+# for index in range(len(Y_austrian)):
+# 	Y_austrian[index] = Y_austrian[index] + ' Austrian'
+
+
 #Combine all European datasets
-# X_european = X_austrian.append([X_italian, X_french_german])
-# Y_european = Y_austrian + Y_italian + Y_french_german
+X_european = X_austrian.append([X_italian, X_french_german])
+Y_european = Y_austrian + Y_italian + Y_french_german
+
 
 #LOSO Austrian
 # X_european = X_italian.append([X_french_german])
@@ -114,8 +126,8 @@ for index in X_chinese.index.tolist():
 # Y_european = Y_austrian + Y_french_german
 
 #LOSO French and German
-X_european = X_austrian.append([X_italian])
-Y_european = Y_austrian + Y_italian
+# X_european = X_austrian.append([X_italian])
+# Y_european = Y_austrian + Y_italian
 
 #Cross validation
 #X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
@@ -124,12 +136,15 @@ Y_european = Y_austrian + Y_italian
 ml = ML()
 #ml.randomForest(X_train, X_test, Y_train, Y_test)
 #ml.randomForest(X_european, X_french_german, Y_european, Y_french_german)
-ml.logisticRegeression(X_european, X_french_german, Y_european, Y_french_german)
+#l.logisticRegeression(X_european, X_french_german, Y_european, Y_french_german)
 
 #Feature selection
 #selectedFeatures = ml.selectFromModel(X_european, Y_european)
 
 #Create and plot a diagonal correlation matrix
 #ml.correlationMatrix(X_european, Y_european)
+
+#PCA
+#ml.pca(X_european, Y_european, targets=['CRC Italian', 'control Italian', 'CRC French_German', 'control French_German', 'CRC Austrian', 'control Austrian'], colors=['r','b','g','y','c','m'])
 
 

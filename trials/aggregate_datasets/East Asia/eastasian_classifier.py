@@ -83,6 +83,13 @@ Y_chinese = []
 for index in X_chinese.index.tolist():
 	Y_chinese.append(idToTarget[index])
 
+# ##PCA with disease + geography preprocessing
+# for index in range(len(Y_japanese)):
+# 	Y_japanese[index] = Y_japanese[index] + ' Japanese'
+
+# for index in range(len(Y_chinese)):
+# 	Y_chinese[index] = Y_chinese[index] + ' Chinese'
+
 
 X_eastasian = X_japanese.append(X_chinese)
 Y_eastasian = Y_japanese + Y_chinese
@@ -91,14 +98,18 @@ print(X_eastasian)
 print(Y_eastasian)
 
 #Train test split
-X_train, X_test, Y_train, Y_test = train_test_split(X_eastasian, Y_eastasian, test_size=0.33)
+#X_train, X_test, Y_train, Y_test = train_test_split(X_eastasian, Y_eastasian, test_size=0.33)
 
 #Classifier
 ml = ML()
-ml.randomForest(X_train, X_test, Y_train, Y_test)
+#ml.randomForest(X_train, X_test, Y_train, Y_test)
 #ml.logisticRegeression(X_train, X_test, Y_train, Y_test)
 
 #Create diagonal correlation matrix
-ml.correlationMatrix(X_eastasian, Y_eastasian)
+#ml.correlationMatrix(X_eastasian, Y_eastasian)
+
+#PCA
+#ml.pca(X_eastasian, Y_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese'], colors=['r','b','g','y'])
+ml.pca(X_eastasian, Y_eastasian)
 
 
