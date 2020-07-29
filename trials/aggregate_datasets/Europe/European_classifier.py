@@ -146,5 +146,5 @@ ml = ML()
 
 #PCA
 #ml.pca(X_european, Y_european, targets=['CRC Italian', 'control Italian', 'CRC French_German', 'control French_German', 'CRC Austrian', 'control Austrian'], colors=['r','b','g','y','c','m'])
-
+ml.pca(X_european, Y_european)
 
