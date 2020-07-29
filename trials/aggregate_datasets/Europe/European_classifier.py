@@ -8,18 +8,20 @@ import matplotlib.pyplot as plt
 #Preprocess features
 preprocess = preprocess()
 
-preprocess.decompose(path='data/FengQ_austrian.tsv', out='data/filedump/Austrian')
-preprocess.decompose(path='data/ThomasAM_italian.tsv', out='data/filedump/Italian')
-preprocess.decompose(path='data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', out='data/filedump/French_German')
-preprocess.decompose(path='data/Yu_china.tsv', out='data/filedump/Chinese')
+# preprocess.decompose(path='data/FengQ_austrian.tsv', out='data/filedump/Austrian')
+# preprocess.decompose(path='data/ThomasAM_italian.tsv', out='data/filedump/Italian')
+# preprocess.decompose(path='data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', out='data/filedump/French_German')
+# preprocess.decompose(path='data/Yu_china.tsv', out='data/filedump/Chinese')
 
-dfList = preprocess.standardPreprocess('data/filedump', keepFiles=False)
+dfList = preprocess.standardPreprocess('data/filedump')
 
-X_austrian = dfList[0]
-X_italian = dfList[1]
-X_chinese = dfList[2]
-X_french_german = dfList[3]
+X_japanese = dfList[0]
+X_austrian = dfList[1]
+X_italian = dfList[2]
+X_chinese = dfList[3]
+X_french_german = dfList[4]
 
+print(X_japanese)
 print(X_austrian)
 print(X_italian)
 print(X_chinese)
@@ -100,6 +102,57 @@ Y_chinese = []
 for index in X_chinese.index.tolist():
 	Y_chinese.append(idToTarget[index])
 
+#Preprocess Japanese targets
+japaneseMetadataDf = pd.read_csv('data/japanese_metadata.csv')
+
+#Create a dictionary with key:value = sample:run
+sampleToRun = {}
+index=0
+for sample in japaneseMetadataDf['BioSample']:
+	sampleToRun[sample] = japaneseMetadataDf.at[index, 'Run']
+	index+=1
+
+#Create new indices for features
+newIndexFeatures=[]
+for index in X_japanese.index.tolist():
+	if index in sampleToRun:
+		newIndexFeatures.append(sampleToRun[index])
+
+#Change indicies
+X_japanese.index = newIndexFeatures
+
+#Create new indices for metadata
+newIndexMetadata=[]
+for sample in japaneseMetadataDf['BioSample'].tolist():
+	if sample in sampleToRun:
+		newIndexMetadata.append(sampleToRun[sample])
+
+japaneseMetadataDf.index = newIndexMetadata
+
+#Preprocess targets
+
+#Fix the scrambled IDs issue
+idToTarget = {}
+for sample in japaneseMetadataDf.index.tolist():
+	#Remove all unrelated targets and their corresponding samples
+	if 'CRC' in japaneseMetadataDf.at[sample,'host_disease_stat']:
+		idToTarget[sample] = japaneseMetadataDf.at[sample, 'host_disease_stat'].split(' (', 1)[0]
+
+	if 'Healthy control' in japaneseMetadataDf.at[sample, 'host_disease_stat']:
+		idToTarget[sample] = japaneseMetadataDf.at[sample, 'host_disease_stat']
+
+#Create targets list with matching id:target
+Y_japanese = []
+for index in X_japanese.index.tolist():
+	if index in idToTarget:
+		Y_japanese.append(idToTarget[index])
+
+#Change all "Healthy control" to "control"
+for index in range(len(Y_japanese)):
+	if Y_japanese[index] == 'Healthy control':
+		Y_japanese[index] = 'control'
+
+
 
 # ##PCA with disease + geography preprocessing
 # for index in range(len(Y_italian)):
@@ -136,15 +189,16 @@ Y_european = Y_austrian + Y_italian + Y_french_german
 ml = ML()
 #ml.randomForest(X_train, X_test, Y_train, Y_test)
 #ml.randomForest(X_european, X_french_german, Y_european, Y_french_german)
-#l.logisticRegeression(X_european, X_french_german, Y_european, Y_french_german)
+#ml.randomForest(X_european, X_japanese, Y_european, Y_japanese)
+#ml.logisticRegeression(X_european, X_japanese, Y_european, Y_japanese)
 
 #Feature selection
 #selectedFeatures = ml.selectFromModel(X_european, Y_european)
 
 #Create and plot a diagonal correlation matrix
-#ml.correlationMatrix(X_european, Y_european)
+ml.correlationMatrix(X_european, Y_european)
 
 #PCA
 #ml.pca(X_european, Y_european, targets=['CRC Italian', 'control Italian', 'CRC French_German', 'control French_German', 'CRC Austrian', 'control Austrian'], colors=['r','b','g','y','c','m'])
-ml.pca(X_european, Y_european)
+#ml.pca(X_european, Y_european)
 
