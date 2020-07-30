@@ -196,7 +196,7 @@ ml = ML()
 #selectedFeatures = ml.selectFromModel(X_european, Y_european)
 
 #Create and plot a diagonal correlation matrix
-ml.correlationMatrix(X_european, Y_european)
+#ml.correlationMatrix(X_european, Y_european)
 
 #PCA
 #ml.pca(X_european, Y_european, targets=['CRC Italian', 'control Italian', 'CRC French_German', 'control French_German', 'CRC Austrian', 'control Austrian'], colors=['r','b','g','y','c','m'])
