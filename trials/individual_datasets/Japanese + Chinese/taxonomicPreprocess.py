@@ -45,7 +45,7 @@ class preprocess:
 
 
 	#Goes through directory with folders and returns multiple abundance dataframes all following the same superset and format
-	def standardPreprocess(self, directory, keepFiles=True):
+	def standardPreprocess(self, directory, keepFiles=True, onlyVirus=False, onlyBacteria=False):
 
 		speciesToWeights = {} #Dict that will have species as keys and a list taxonomic weights as values
 		speciesNotPresent = []
@@ -62,12 +62,27 @@ class preprocess:
 				#File should always be a tsv
 				df = pd.read_csv(filepath, sep='\t', engine='c') #Import files into dataframe assuming 'tab' is the separator
 				df.columns=['Microbes', 'Weights'] #Change column names
+
 				#Iterate through species in microbes
-				for species in df['Microbes']:
-					if "s__" in species and "t__" not in species:
-						#Log all species in dictionary
-						if species not in speciesToWeights:
-							speciesToWeights[species] = []
+				if onlyVirus == True:
+					for species in df['Microbes']:
+						if "s__" in species and "t__" not in species and "k__Viruses" in species:
+							#Log all species in dictionary
+							if species not in speciesToWeights:
+								speciesToWeights[species] = []
+
+				elif onlyBacteria == True:
+					for species in df['Microbes']:
+						if "s__" in species and "t__" not in species and "k__Bacteria" in species:
+							#Log all species in dictionary
+							if species not in speciesToWeights:
+								speciesToWeights[species] = []
+				else:
+					for species in df['Microbes']:
+						if "s__" in species and "t__" not in species:
+							#Log all species in dictionary
+							if species not in speciesToWeights:
+								speciesToWeights[species] = []
 
 		numberOfLoops = 1
 		subdirList = []
@@ -88,10 +103,24 @@ class preprocess:
 				df.columns=['Microbes', 'Weights'] #Change column names
 
 				#Append weights to dictionary
-				for species in df['Microbes']:
-					if "s__" in species and "t__" not in species:
-						speciesToWeights[species].append(float(df.at[index, 'Weights']))
-					index+=1
+				if onlyVirus == True:
+					for species in df['Microbes']:
+						if "s__" in species and "t__" not in species and "k__Viruses" in species:
+							speciesToWeights[species].append(float(df.at[index, 'Weights']))
+						index+=1
+
+				elif onlyBacteria == True:
+					for species in df['Microbes']:
+						if "s__" in species and "t__" not in species and "k__Bacteria" in species:
+							speciesToWeights[species].append(float(df.at[index, 'Weights']))
+						index+=1
+
+				else:
+					for species in df['Microbes']:
+						if "s__" in species and "t__" not in species:
+							speciesToWeights[species].append(float(df.at[index, 'Weights']))
+						index+=1
+
 				
 				#Find which species were not present in a given file 
 				for key in speciesToWeights:
@@ -150,10 +179,11 @@ class preprocess:
 				else:
 					X[column].iloc[index] = 1
 
-# preprocess = preprocess()
-# df = preprocess.decompose(path='trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', out = 'nani')
+preprocess = preprocess()
 
-# dfList = preprocess.standardPreprocess('nani')
+#df = preprocess.decompose(path='trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', out = 'virus')
+
+# dfList = preprocess.standardPreprocess('China', onlyVirus = True)
 # print(dfList[0])
 
 

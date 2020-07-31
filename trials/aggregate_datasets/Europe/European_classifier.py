@@ -186,9 +186,7 @@ X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test
 #Classifier
 ml = ML()
 ml.randomForest(X_train, X_test, Y_train, Y_test)
-#ml.randomForest(X_european, X_french_german, Y_european, Y_french_german)
-#ml.randomForest(X_european, X_japanese, Y_european, Y_japanese)
-#ml.logisticRegeression(X_european, X_japanese, Y_european, Y_japanese)
+#ml.logisticRegression(X_train, X_test, Y_train, Y_test)
 
 #Feature selection
 #selectedFeatures = ml.selectFromModel(X_european, Y_european)

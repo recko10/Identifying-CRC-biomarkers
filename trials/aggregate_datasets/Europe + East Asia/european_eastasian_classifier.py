@@ -4,7 +4,6 @@ from taxonomicML import *
 from sklearn.model_selection import train_test_split
 
 #Preprocess features
-preprocess = preprocess()
 
 preprocess.decompose(path='data/FengQ_austrian.tsv', out='data/filedump/CMD/Austrian')
 preprocess.decompose(path='data/ThomasAM_italian.tsv', out='data/filedump/CMD/Italian')
@@ -19,11 +18,11 @@ X_chinese = dfList[2]
 X_french_german = dfList[3]
 X_japanese = dfList[4]
 
-# print(X_austrian)
-# print(X_italian)
+print(X_austrian)
+print(X_italian)
 print(X_chinese)
-# print(X_french_german)
-# print(X_japanese)
+print(X_french_german)
+print(X_japanese)
 
 ###Preprocess Japanese
 
@@ -182,6 +181,7 @@ for index in X_french_german.index.tolist():
 # for index in range(len(Y_japanese)):
 # 	Y_japanese[index] = Y_japanese[index] + ' Japanese'
 
+
 # ###Preprocess geography PCA
 # for index in range(len(Y_austrian)):
 # 	Y_austrian[index] = 'Austrian'
@@ -203,22 +203,19 @@ for index in X_french_german.index.tolist():
 X_european_eastasian = X_austrian.append([X_italian, X_chinese, X_french_german, X_japanese])
 Y_european_eastasian = Y_austrian + Y_italian + Y_chinese + Y_french_german + Y_japanese
 
-print(X_european_eastasian)
-print(Y_european_eastasian)
-
 #Train test split
-#X_train, X_test, Y_train, Y_test = train_test_split(X_european_eastasian, Y_european_eastasian, test_size=0.33)
+X_train, X_test, Y_train, Y_test = train_test_split(X_european_eastasian, Y_european_eastasian, test_size=0.33)
 
 #Classifier
 ml = ML()
 #ml.randomForest(X_train, X_test, Y_train, Y_test)
-#ml.logisticRegeression(X_train, X_test, Y_train, Y_test)
+#ml.logisticRegression(X_train, X_test, Y_train, Y_test)
 #ml.randomForest(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
 #ml.logisticRegeression(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
 
 
 #Create diagonal correlation matrix
-ml.correlationMatrix(X_european_eastasian, Y_european_eastasian)
+#ml.correlationMatrix(X_european_eastasian, Y_european_eastasian)
 
 #PCA
 #ml.pca(X_european_eastasian, Y_european_eastasian)

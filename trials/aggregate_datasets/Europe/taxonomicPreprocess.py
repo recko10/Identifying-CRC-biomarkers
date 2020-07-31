@@ -45,7 +45,7 @@ class preprocess:
 
 
 	#Goes through directory with folders and returns multiple abundance dataframes all following the same superset and format
-	def standardPreprocess(self, directory, keepFiles=True, onlyVirus=False):
+	def standardPreprocess(self, directory, keepFiles=True, onlyVirus=False, onlyBacteria=False):
 
 		speciesToWeights = {} #Dict that will have species as keys and a list taxonomic weights as values
 		speciesNotPresent = []
@@ -67,6 +67,13 @@ class preprocess:
 				if onlyVirus == True:
 					for species in df['Microbes']:
 						if "s__" in species and "t__" not in species and "k__Viruses" in species:
+							#Log all species in dictionary
+							if species not in speciesToWeights:
+								speciesToWeights[species] = []
+
+				elif onlyBacteria == True:
+					for species in df['Microbes']:
+						if "s__" in species and "t__" not in species and "k__Bacteria" in species:
 							#Log all species in dictionary
 							if species not in speciesToWeights:
 								speciesToWeights[species] = []
@@ -101,7 +108,13 @@ class preprocess:
 						if "s__" in species and "t__" not in species and "k__Viruses" in species:
 							speciesToWeights[species].append(float(df.at[index, 'Weights']))
 						index+=1
-						
+
+				elif onlyBacteria == True:
+					for species in df['Microbes']:
+						if "s__" in species and "t__" not in species and "k__Bacteria" in species:
+							speciesToWeights[species].append(float(df.at[index, 'Weights']))
+						index+=1
+
 				else:
 					for species in df['Microbes']:
 						if "s__" in species and "t__" not in species:
