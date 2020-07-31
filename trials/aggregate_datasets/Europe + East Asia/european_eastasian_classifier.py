@@ -204,7 +204,7 @@ X_european_eastasian = X_austrian.append([X_italian, X_chinese, X_french_german,
 Y_european_eastasian = Y_austrian + Y_italian + Y_chinese + Y_french_german + Y_japanese
 
 #Train test split
-X_train, X_test, Y_train, Y_test = train_test_split(X_european_eastasian, Y_european_eastasian, test_size=0.33)
+#X_train, X_test, Y_train, Y_test = train_test_split(X_european_eastasian, Y_european_eastasian, test_size=0.33)
 
 #Classifier
 ml = ML()
@@ -213,6 +213,8 @@ ml = ML()
 #ml.randomForest(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
 #ml.logisticRegeression(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
 
+#Scree plot
+#ml.scree(X_european_eastasian)
 
 #Create diagonal correlation matrix
 #ml.correlationMatrix(X_european_eastasian, Y_european_eastasian)

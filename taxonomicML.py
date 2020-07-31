@@ -11,6 +11,7 @@ from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import RFE
 from sklearn.base import clone
 from sklearn.ensemble import RandomForestClassifier
+import matplotlib
 import matplotlib.pyplot as plt 
 import numpy as np
 import seaborn as sns
@@ -28,9 +29,8 @@ class ML:
 		X = StandardScaler().fit_transform(X) #Scale the data
 
 		#PCA transform
-		pca = PCA(n_components=8)
+		pca = PCA(n_components=2)
 		principalComponents = pca.fit_transform(X) #Transform the scaled data onto a new vector space
-		principalComponents = principalComponents[:, [6, 7]]
 		principalDf = pd.DataFrame(data=principalComponents, columns = ['principal component 1', 'principal component 2']) #Create new dataframe with principal components as the data
 
 		principalDf.index = indices
@@ -55,6 +55,32 @@ class ML:
 		ax.grid()
 		plt.show()
 		return principalDf
+
+	#Create a scree plot
+	def scree(self, X):
+
+		num_vars = len(X.columns.tolist())
+		num_obs = len(X.index.tolist())
+
+		#Convert df to numpy array
+		A = X.to_numpy()
+
+		A = np.asmatrix(A.T) * np.asmatrix(A)
+		U, S, V = np.linalg.svd(A) #Singular vector decomposition
+		eigvals = S**2 / np.sum(S**2)  
+
+		fig = plt.figure(figsize=(8,5))
+		sing_vals = np.arange(num_vars) + 1
+		plt.plot(sing_vals, eigvals, 'ro-', linewidth=2)
+		plt.title('Scree Plot')
+		plt.xlabel('Principal Component')
+		plt.ylabel('Eigenvalue')
+
+		leg = plt.legend(['Eigenvalues from SVD'], loc='best', borderpad=0.3, 
+		                 shadow=False, prop=matplotlib.font_manager.FontProperties(size='small'),
+		                 markerscale=0.4)
+		leg.get_frame().set_alpha(0.4)
+		plt.show()
 
 	#Selects the top 30 features from a given fitted model
 	def selectFromModel(self, model, X_train, Y_train):
@@ -134,7 +160,7 @@ class ML:
 
 		return y_pred
 
-	def logisticRegeression(self, X_train, X_test, Y_train, Y_test):
+	def logisticRegression(self, X_train, X_test, Y_train, Y_test):
 		#Scale and create splits
 		X_prescale_train = X_train
 		X_prescale_test = X_test

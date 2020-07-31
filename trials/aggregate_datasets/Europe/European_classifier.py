@@ -181,12 +181,15 @@ Y_european = Y_austrian + Y_italian + Y_french_german
 # Y_european = Y_austrian + Y_italian
 
 #Cross validation
-X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
+#X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
 
 #Classifier
 ml = ML()
-ml.randomForest(X_train, X_test, Y_train, Y_test)
+#ml.randomForest(X_train, X_test, Y_train, Y_test)
 #ml.logisticRegression(X_train, X_test, Y_train, Y_test)
+
+#Scree plot
+#ml.scree(X_european)
 
 #Feature selection
 #selectedFeatures = ml.selectFromModel(X_european, Y_european)
