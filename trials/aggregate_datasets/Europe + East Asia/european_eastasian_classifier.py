@@ -182,6 +182,7 @@ for index in X_french_german.index.tolist():
 # 	Y_japanese[index] = Y_japanese[index] + ' Japanese'
 
 
+
 # ###Preprocess geography PCA
 # for index in range(len(Y_austrian)):
 # 	Y_austrian[index] = 'Austrian'
@@ -204,7 +205,7 @@ X_european_eastasian = X_austrian.append([X_italian, X_chinese, X_french_german,
 Y_european_eastasian = Y_austrian + Y_italian + Y_chinese + Y_french_german + Y_japanese
 
 #Train test split
-X_train, X_test, Y_train, Y_test = train_test_split(X_european_eastasian, Y_european_eastasian, test_size=0.33)
+#X_train, X_test, Y_train, Y_test = train_test_split(X_european_eastasian, Y_european_eastasian, test_size=0.33)
 
 #Classifier
 ml = ML()
@@ -213,6 +214,8 @@ ml = ML()
 #ml.randomForest(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
 #ml.logisticRegeression(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
 
+#Scree plot
+#ml.scree(X_european_eastasian)
 
 #Create diagonal correlation matrix
 #ml.correlationMatrix(X_european_eastasian, Y_european_eastasian)
@@ -221,7 +224,17 @@ ml = ML()
 #ml.pca(X_european_eastasian, Y_european_eastasian)
 
 #Geography + disease PCA
-
 #ml.pca(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
+
+#Geography PCA
 #ml.pca(X_european_eastasian, Y_european_eastasian, targets=['Austrian', 'Italian', 'French or German', 'Chinese', 'Japanese'], colors=['r','g','b','y','m'])
+
+#TSNE
+ml.tsne(X_european_eastasian, Y_european_eastasian)
+
+#Geography + disease TSNE
+#ml.tsne(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
+
+#Geography TSNE
+#ml.tsne(X_european_eastasian, Y_european_eastasian, targets=['Austrian', 'Italian', 'French or German', 'Chinese', 'Japanese'], colors=['r','g','b','y','m'])
 

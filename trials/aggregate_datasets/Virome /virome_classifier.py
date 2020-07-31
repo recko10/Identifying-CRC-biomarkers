@@ -208,11 +208,11 @@ Y_virome = Y_austrian + Y_chinese + Y_french_german + Y_italian + Y_usa + Y_japa
 # Y_virome = Y_austrian + Y_chinese + Y_italian + Y_usa + Y_japanese
 
 #Cross validation
-X_train, X_test, Y_train, Y_test = train_test_split(X_virome, Y_virome, test_size = 0.33)
+#_train, X_test, Y_train, Y_test = train_test_split(X_virome, Y_virome, test_size = 0.33)
 
 #Classifier
 ml = ML()
-ml.randomForest(X_train, X_test, Y_train, Y_test)
+#ml.randomForest(X_train, X_test, Y_train, Y_test)
 #ml.logisticRegression(X_virome, X_italian, Y_virome, Y_italian)
 
 #Feature selection
@@ -224,4 +224,7 @@ ml.randomForest(X_train, X_test, Y_train, Y_test)
 #PCA
 #ml.pca(X_european, Y_european, targets=['CRC Italian', 'control Italian', 'CRC French_German', 'control French_German', 'CRC Austrian', 'control Austrian'], colors=['r','b','g','y','c','m'])
 #ml.pca(X_virome, Y_virome)
+
+#TSNE
+#ml.tsne(X_virome, Y_virome)
 
