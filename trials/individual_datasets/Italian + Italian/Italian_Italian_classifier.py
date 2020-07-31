@@ -4,8 +4,6 @@ from taxonomicML import *
 from sklearn.model_selection import train_test_split
 
 #Preprocess features
-preprocess = preprocess()
-
 preprocess.decompose(path='data/ThomasAM_italian.tsv', out='data/filedump/Italian')
 
 dfList = preprocess.standardPreprocess('data/filedump', keepFiles=False)

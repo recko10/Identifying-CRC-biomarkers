@@ -101,6 +101,7 @@ class preprocess:
 						if "s__" in species and "t__" not in species and "k__Viruses" in species:
 							speciesToWeights[species].append(float(df.at[index, 'Weights']))
 						index+=1
+						
 				else:
 					for species in df['Microbes']:
 						if "s__" in species and "t__" not in species:

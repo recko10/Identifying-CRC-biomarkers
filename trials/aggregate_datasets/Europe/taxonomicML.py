@@ -30,7 +30,6 @@ class ML:
 		#PCA transform
 		pca = PCA(n_components=2)
 		principalComponents = pca.fit_transform(X) #Transform the scaled data onto a new vector space
-		#principalComponents = principalComponents[:, [8, 9]]
 		principalDf = pd.DataFrame(data=principalComponents, columns = ['principal component 1', 'principal component 2']) #Create new dataframe with principal components as the data
 
 		principalDf.index = indices
@@ -63,7 +62,7 @@ class ML:
 		selectedFeatures = []
 
 		#Create model
-		sfm = SelectFromModel(estimator=model, max_features=30) 
+		sfm = SelectFromModel(estimator=model, max_features=30)
 
 		#Scale the data
 		X_train = StandardScaler().fit_transform(X_train)
@@ -131,10 +130,10 @@ class ML:
 
 		#Print classification report
 		print(classification_report(Y_test, y_pred, target_names=['CRC','control']))
-		
+
 		return y_pred
 
-	def logisticRegeression(self, X_train, X_test, Y_train, Y_test):
+	def logisticRegression(self, X_train, X_test, Y_train, Y_test):
 		#Scale and create splits
 		X_prescale_train = X_train
 		X_prescale_test = X_test
