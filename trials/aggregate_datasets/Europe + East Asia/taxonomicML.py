@@ -61,7 +61,7 @@ class ML:
 	def tsne(self, X, Y, targets=['CRC','control'], colors=['r','b']):
 
 		#Scale
-		indices = X.index #Save X inidces to import into principalDf once it is created
+		indices = X.index #Save X indices to import into principalDf once it is created
 		X = StandardScaler().fit_transform(X) #Scale the data
 
 		#TSNE transform
