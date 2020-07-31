@@ -133,7 +133,7 @@ class ML:
 
 		return y_pred
 
-	def logisticRegeression(self, X_train, X_test, Y_train, Y_test):
+	def logisticRegression(self, X_train, X_test, Y_train, Y_test):
 		#Scale and create splits
 		X_prescale_train = X_train
 		X_prescale_test = X_test

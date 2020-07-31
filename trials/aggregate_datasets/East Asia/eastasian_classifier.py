@@ -4,13 +4,19 @@ from taxonomicML import *
 from sklearn.model_selection import train_test_split
 
 #Preprocess features
-preprocess = preprocess()
+preprocess.decompose(path='data/Yu_china.tsv', out='data/filedump/Chinese')
+preprocess.decompose(path='data/FengQ_austrian.tsv', out='data/filedump/Austrian')
+
 
 dfList = preprocess.standardPreprocess('data/filedump')
 
 X_japanese = dfList[0]
 X_austrian = dfList[1]
 X_chinese = dfList[2]
+
+print(X_japanese)
+print(X_austrian)
+print(X_chinese)
 
 ###Preprocess Japanese
 
@@ -120,18 +126,18 @@ print(X_eastasian)
 print(Y_eastasian)
 
 #Train test split
-#X_train, X_test, Y_train, Y_test = train_test_split(X_eastasian, Y_eastasian, test_size=0.33)
+X_train, X_test, Y_train, Y_test = train_test_split(X_eastasian, Y_eastasian, test_size=0.33)
 
 #Classifier
 ml = ML()
-#ml.randomForest(X_train, X_test, Y_train, Y_test)
+ml.randomForest(X_train, X_test, Y_train, Y_test)
 #ml.logisticRegeression(X_train, X_test, Y_train, Y_test)
 #ml.randomForest(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
 #ml.logisticRegeression(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
 
 
 #Create diagonal correlation matrix
-ml.correlationMatrix(X_eastasian, Y_eastasian)
+#ml.correlationMatrix(X_eastasian, Y_eastasian)
 
 #PCA
 #ml.pca(X_eastasian, Y_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese'], colors=['r','b','g','y'])

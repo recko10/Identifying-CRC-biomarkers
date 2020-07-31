@@ -6,8 +6,6 @@ import matplotlib.pyplot as plt
 
 
 #Preprocess features
-preprocess = preprocess()
-
 # preprocess.decompose(path='data/FengQ_austrian.tsv', out='data/filedump/Austrian')
 # preprocess.decompose(path='data/ThomasAM_italian.tsv', out='data/filedump/Italian')
 # preprocess.decompose(path='data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', out='data/filedump/French_German')
@@ -183,14 +181,12 @@ Y_european = Y_austrian + Y_italian + Y_french_german
 # Y_european = Y_austrian + Y_italian
 
 #Cross validation
-#X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
+X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size = 0.33)
 
 #Classifier
 ml = ML()
-#ml.randomForest(X_train, X_test, Y_train, Y_test)
-#ml.randomForest(X_european, X_french_german, Y_european, Y_french_german)
-#ml.randomForest(X_european, X_japanese, Y_european, Y_japanese)
-#ml.logisticRegeression(X_european, X_japanese, Y_european, Y_japanese)
+ml.randomForest(X_train, X_test, Y_train, Y_test)
+#ml.logisticRegression(X_train, X_test, Y_train, Y_test)
 
 #Feature selection
 #selectedFeatures = ml.selectFromModel(X_european, Y_european)
