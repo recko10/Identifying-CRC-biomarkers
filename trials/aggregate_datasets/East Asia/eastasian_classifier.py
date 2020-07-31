@@ -145,4 +145,6 @@ ml = ML()
 #ml.pca(X_eastasian, Y_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese'], colors=['r','b','g','y'])
 #ml.pca(X_eastasian, Y_eastasian)
 
+#TSNE
+#ml.tsne(X_eastasian, Y_eastasian)
 

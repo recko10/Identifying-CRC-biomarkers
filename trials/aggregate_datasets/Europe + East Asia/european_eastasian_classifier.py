@@ -227,3 +227,5 @@ ml = ML()
 #ml.pca(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
 #ml.pca(X_european_eastasian, Y_european_eastasian, targets=['Austrian', 'Italian', 'French or German', 'Chinese', 'Japanese'], colors=['r','g','b','y','m'])
 
+#TSNE
+#ml.tsne(X_european_eastasian, Y_european_eastasian)

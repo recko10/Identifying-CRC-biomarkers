@@ -18,6 +18,8 @@ import seaborn as sns
 from string import ascii_letters
 from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import classification_report
+from sklearn.manifold import TSNE
+
 
 class ML:
 
@@ -55,6 +57,40 @@ class ML:
 		ax.grid()
 		plt.show()
 		return principalDf
+
+	def tsne(self, X, Y, targets=['CRC','control'], colors=['r','b']):
+
+		#Scale
+		indices = X.index #Save X inidces to import into principalDf once it is created
+		X = StandardScaler().fit_transform(X) #Scale the data
+
+		#TSNE transform
+		tsne = TSNE(n_components=2)
+		tsneComponents = tsne.fit_transform(X) #Transform the scaled data onto a new vector space
+		tsneDf = pd.DataFrame(data=tsneComponents, columns = ['TSNE component 1', 'TSNE component 2']) #Create new dataframe with principal components as the data
+
+		tsneDf.index = indices
+
+		finalDf = tsneDf
+
+		#Append targets to df before sending it to be plotted
+		finalDf['target'] = Y
+
+		#Plot the principal components
+		fig = plt.figure(figsize = (8,8))
+		ax = fig.add_subplot(1,1,1) 
+		ax.set_xlabel('TSNE Component 1', fontsize = 15)
+		ax.set_ylabel('TSNE Component 2', fontsize = 15)
+		for target, color in zip(targets,colors):
+		    indicesToKeep = finalDf['target'] == target
+		    ax.scatter(finalDf.loc[indicesToKeep, 'TSNE component 1']
+		               , finalDf.loc[indicesToKeep, 'TSNE component 2']
+		               , c = color
+		               , s = 50)
+		ax.legend(targets)
+		ax.grid()
+		plt.show()
+		return tsneDf
 
 	#Create a scree plot
 	def scree(self, X):
