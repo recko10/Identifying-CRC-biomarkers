@@ -21,7 +21,7 @@ X_japanese = dfList[4]
 
 # print(X_austrian)
 # print(X_italian)
-# print(X_chinese)
+print(X_chinese)
 # print(X_french_german)
 # print(X_japanese)
 
@@ -182,21 +182,21 @@ for index in X_french_german.index.tolist():
 # for index in range(len(Y_japanese)):
 # 	Y_japanese[index] = Y_japanese[index] + ' Japanese'
 
-###Preprocess geography PCA
-for index in range(len(Y_austrian)):
-	Y_austrian[index] = 'Austrian'
+# ###Preprocess geography PCA
+# for index in range(len(Y_austrian)):
+# 	Y_austrian[index] = 'Austrian'
 
-for index in range(len(Y_italian)):
-	Y_italian[index] = 'Italian'
+# for index in range(len(Y_italian)):
+# 	Y_italian[index] = 'Italian'
 
-for index in range(len(Y_french_german)):
-	Y_french_german[index] = 'French or German'
+# for index in range(len(Y_french_german)):
+# 	Y_french_german[index] = 'French or German'
 
-for index in range(len(Y_chinese)):
-	Y_chinese[index] = 'Chinese'
+# for index in range(len(Y_chinese)):
+# 	Y_chinese[index] = 'Chinese'
 
-for index in range(len(Y_japanese)):
-	Y_japanese[index] = 'Japanese'
+# for index in range(len(Y_japanese)):
+# 	Y_japanese[index] = 'Japanese'
 
 
 #Create European and Asian dataset
