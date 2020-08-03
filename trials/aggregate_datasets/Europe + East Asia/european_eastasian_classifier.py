@@ -77,8 +77,6 @@ for index in range(len(Y_japanese)):
 		Y_japanese[index] = 'control'
 
 
-
-
 ###Preprocess Austrian
 
 #Preprocess Austrian targets
@@ -98,10 +96,6 @@ for sample in austrianDf.columns.tolist():
 Y_austrian = []
 for index in X_austrian.index.tolist():
 	Y_austrian.append(idToTarget[index])
-
-
-
-
 
 ###Preprocess Chinese
 
@@ -145,24 +139,88 @@ for index in X_italian.index.tolist():
 	Y_italian.append(idToTarget[index])
 
 
-###Preprocess French and German
-#Preprocess French and German targets
-french_germanDf = pd.read_csv('data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', sep='\t')
+##Preprocess just French
+X_french = X_french_german
+
+#Select for only french samples
+for index in X_french.index.tolist():
+	if 'CCIS' not in index:
+		X_french = X_french.drop(index, axis=0)
+
+#Preprocess targets
+frenchDf = pd.read_csv('data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', sep='\t')
+
+#Select for only french samples
+for header in frenchDf.columns.tolist():
+	if 'CCIS' not in header:
+		frenchDf = frenchDf.drop(header, axis=1)
 
 #Fix the scrambled IDs issue
 idToTarget = {}
-for sample in french_germanDf.columns.tolist():
+for sample in frenchDf.columns.tolist():
 	if sample == 'Unnamed: 0':
 		continue
 	#Remove all unrelated targets and their corresponding samples
-	if french_germanDf.at[3, sample] != 'CRC' and french_germanDf.at[3, sample] != 'control':
-		X_french_german = X_french_german.drop(sample, axis=0)
+	if frenchDf.at[3, sample] != 'CRC' and frenchDf.at[3, sample] != 'control':
+		X_french = X_french.drop(sample, axis=0)
 		continue
-	idToTarget[sample] = french_germanDf.at[3, sample]
+	idToTarget[sample] = frenchDf.at[3, sample]
 
-Y_french_german = []
-for index in X_french_german.index.tolist():
-	Y_french_german.append(idToTarget[index])
+Y_french = []
+for index in X_french.index.tolist():
+	Y_french.append(idToTarget[index])
+
+
+##Preprocess just German
+X_german = X_french_german
+
+#Select for only German samples
+for index in X_german.index.tolist():
+	if 'CCIS' in index:
+		X_german = X_german.drop(index, axis=0)
+
+#Preprocess targets
+germanDf = pd.read_csv('data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', sep='\t')
+
+#Select for only German samples
+for header in germanDf.columns.tolist():
+	if 'CCIS' in header:
+		germanDf = germanDf.drop(header, axis=1)
+
+#Fix the scrambled IDs issue
+idToTarget = {}
+for sample in germanDf.columns.tolist():
+	if sample == 'Unnamed: 0':
+		continue
+
+	#Remove all unrelated targets and their corresponding samples
+	if germanDf.at[3, sample] != 'CRC' and germanDf.at[3, sample] != 'control':
+		X_german = X_german.drop(sample, axis=0)
+		continue
+	idToTarget[sample] = germanDf.at[3, sample]
+
+Y_german = []
+for index in X_german.index.tolist():
+	Y_german.append(idToTarget[index])
+
+# ###Preprocess French and German
+# #Preprocess French and German targets
+# french_germanDf = pd.read_csv('data/ZellerG_2014.metaphlan_bugs_list.stool.tsv', sep='\t')
+
+# #Fix the scrambled IDs issue
+# idToTarget = {}
+# for sample in french_germanDf.columns.tolist():
+# 	if sample == 'Unnamed: 0':
+# 		continue
+# 	#Remove all unrelated targets and their corresponding samples
+# 	if french_germanDf.at[3, sample] != 'CRC' and french_germanDf.at[3, sample] != 'control':
+# 		X_french_german = X_french_german.drop(sample, axis=0)
+# 		continue
+# 	idToTarget[sample] = french_germanDf.at[3, sample]
+
+# Y_french_german = []
+# for index in X_french_german.index.tolist():
+# 	Y_french_german.append(idToTarget[index])
 
 
 # ###Preprocess geography + disease PCA
@@ -200,9 +258,14 @@ for index in X_french_german.index.tolist():
 # 	Y_japanese[index] = 'Japanese'
 
 
-#Create European and Asian dataset
-X_european_eastasian = X_austrian.append([X_italian, X_chinese, X_french_german, X_japanese])
-Y_european_eastasian = Y_austrian + Y_italian + Y_chinese + Y_french_german + Y_japanese
+#Create European and East Asian dataset
+# X_european_eastasian = X_austrian.append([X_italian, X_chinese, X_french_german, X_japanese])
+# Y_european_eastasian = Y_austrian + Y_italian + Y_chinese + Y_french_german + Y_japanese
+
+#Create just East Asian dataset
+X_eastasian = X_chinese.append([X_japanese])
+Y_eastasian = Y_chinese + Y_japanese
+
 
 #Train test split
 #X_train, X_test, Y_train, Y_test = train_test_split(X_european_eastasian, Y_european_eastasian, test_size=0.33)
@@ -211,8 +274,8 @@ Y_european_eastasian = Y_austrian + Y_italian + Y_chinese + Y_french_german + Y_
 ml = ML()
 #ml.randomForest(X_train, X_test, Y_train, Y_test)
 #ml.logisticRegression(X_train, X_test, Y_train, Y_test)
-#ml.randomForest(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
-#ml.logisticRegeression(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
+#ml.randomForest(X_eastasian, X_french, Y_eastasian, Y_french)
+#ml.logisticRegression(X_eastasian, X_french, Y_eastasian, Y_french)
 
 #Scree plot
 #ml.scree(X_european_eastasian)
@@ -230,7 +293,7 @@ ml = ML()
 #ml.pca(X_european_eastasian, Y_european_eastasian, targets=['Austrian', 'Italian', 'French or German', 'Chinese', 'Japanese'], colors=['r','g','b','y','m'])
 
 #TSNE
-ml.tsne(X_european_eastasian, Y_european_eastasian)
+#ml.tsne(X_european_eastasian, Y_european_eastasian)
 
 #Geography + disease TSNE
 #ml.tsne(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
