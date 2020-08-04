@@ -5,15 +5,17 @@ import shutil
 class preprocess:
 
 	#Takes as input a curatedMetagenomicData abundance file/dataframe (with no modifications) and breaks it into separate files, each file representing 1 sample's abundances
-	def decompose(self, path='', out='', dataframe=None):
+	def decompose(self, path='', out='', dataframe=None, override=False):
 
 		folderPath=out 
 
 		#If folder already exists do not make the directory and end the method
-		if os.path.exists(folderPath):
+		if os.path.exists(folderPath) and override == False:
 			#shutil.rmtree(folderPath)
 			print('Folder already exists!')
 			return
+		elif os.path.exists(folderPath) and override == True:
+			print('Overriding and adding to folder')
 		else:
 			os.makedirs(folderPath)
 
@@ -179,9 +181,18 @@ class preprocess:
 				else:
 					X[column].iloc[index] = 1
 
-preprocess = preprocess()
 
-#df = preprocess.decompose(path='trial_1/data/ThomasAM_2018a.metaphlan_bugs_list.stool.tsv', out = 'virus')
+# preprocess = preprocess()
+# #Decompose entire CMD database
+# for subdir, dirs, files in os.walk('cmd_bugs_no_crc'):
+# 	for file in files:
+
+# 		filepath = subdir + os.sep + file
+
+# 		if file == '.DS_Store':
+# 			continue
+
+# 		preprocess.decompose(path = filepath, out = 'out', override = True)
 
 # dfList = preprocess.standardPreprocess('China', onlyVirus = True)
 # print(dfList[0])
