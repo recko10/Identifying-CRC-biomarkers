@@ -33,6 +33,7 @@ class ML:
 		#PCA transform
 		pca = PCA(n_components=2)
 		principalComponents = pca.fit_transform(X) #Transform the scaled data onto a new vector space
+		#principalComponents = principalComponents[:, [2,3]]
 		principalDf = pd.DataFrame(data=principalComponents, columns = ['principal component 1', 'principal component 2']) #Create new dataframe with principal components as the data
 
 		principalDf.index = indices
@@ -45,8 +46,8 @@ class ML:
 		#Plot the principal components
 		fig = plt.figure(figsize = (8,8))
 		ax = fig.add_subplot(1,1,1) 
-		ax.set_xlabel('Principal Component 1', fontsize = 15)
-		ax.set_ylabel('Principal Component 2', fontsize = 15)
+		ax.set_xlabel('Principal Component 1', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
+		ax.set_ylabel('Principal Component 2', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
 		for target, color in zip(targets,colors):
 		    indicesToKeep = finalDf['target'] == target
 		    ax.scatter(finalDf.loc[indicesToKeep, 'principal component 1']
