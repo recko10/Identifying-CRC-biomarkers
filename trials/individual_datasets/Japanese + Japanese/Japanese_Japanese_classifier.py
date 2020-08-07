@@ -3,9 +3,8 @@ from taxonomicPreprocess import *
 from taxonomicML import *
 from sklearn.model_selection import train_test_split
 
-#Preprocess features
-preprocess = preprocess()
 
+#Preprocess features
 dfList = preprocess.standardPreprocess('data/Erawijantari_japanese_bugs')
 
 X_japanese = dfList[0]

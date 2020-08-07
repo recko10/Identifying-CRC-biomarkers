@@ -14,8 +14,8 @@ class preprocess:
 			#shutil.rmtree(folderPath)
 			print('Folder already exists!')
 			return
-		elif os.path.exists(folderPath) and override == True:
-			print('Overriding and adding to folder')
+		if os.path.exists(folderPath) and override == True:
+			print('Overriding and appending to folder')
 		else:
 			os.makedirs(folderPath)
 
@@ -23,7 +23,7 @@ class preprocess:
 		if dataframe != None:
 			df = dataframe
 		else:
-			df = pd.read_csv(path, sep='\t')
+			df = pd.read_csv(path, sep='\t', low_memory=False)
 
 		#Set indices
 		df.index = df.iloc[:, 0].tolist()
@@ -40,7 +40,7 @@ class preprocess:
 
 		#Drop unnamed column
 		df = df.drop('Unnamed: 0', axis=1)
-	
+		
 		#Create separate files
 		for column in df.columns.tolist():
 			df[column].to_csv(folderPath + os.sep + column + '.tsv', sep='\t')
@@ -182,9 +182,10 @@ class preprocess:
 					X[column].iloc[index] = 1
 
 
+
 # preprocess = preprocess()
 # #Decompose entire CMD database
-# for subdir, dirs, files in os.walk('cmd_bugs_no_crc'):
+# for subdir, dirs, files in os.walk('cmd_bugs'):
 # 	for file in files:
 
 # 		filepath = subdir + os.sep + file
