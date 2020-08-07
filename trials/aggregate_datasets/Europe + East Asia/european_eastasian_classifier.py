@@ -365,7 +365,7 @@ ml = ML()
 #ml.logisticRegression(X_eastasian, X_french, Y_eastasian, Y_french)
 
 #Scree plot
-#ml.scree(X_japanese.append(X_austrian))
+#ml.scree(X_japanese.append(X_chinese))
 
 #Create diagonal correlation matrix
 #ml.correlationMatrix(X_european_eastasian, Y_european_eastasian)
@@ -377,7 +377,7 @@ ml = ML()
 #ml.pca(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
 
 #Geography PCA
-ml.pca(X_japanese.append(X_austrian), Y_japanese+Y_austrian, targets=['Japanese', 'Austrian'], colors=['r','g'])
+ml.pca(X_japanese.append(X_chinese), Y_japanese+Y_chinese, targets=['Japanese', 'Chinese'], colors=['r','g'])
 
 #TSNE
 #ml.tsne(X_european_eastasian, Y_european_eastasian)
@@ -386,5 +386,5 @@ ml.pca(X_japanese.append(X_austrian), Y_japanese+Y_austrian, targets=['Japanese'
 #ml.tsne(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
 
 #Geography TSNE
-#ml.tsne(X_japanese.append(X_austrian), Y_japanese+Y_austrian, targets=['Japanese', 'Austrian'], colors=['r','g'])
+#ml.tsne(X_japanese.append(X_chinese), Y_japanese+Y_chinese, targets=['Japanese', 'Chinese'], colors=['r','g'])
 
