@@ -300,42 +300,42 @@ gerID = idToTarget
 
 # Y_japanese = ['Japanese' for x in Y_japanese if x != 'CRC']
 
-##Preprocess geography only CRC PCA
-for index in X_austrian.index.tolist():
-	if ausID[index] == 'control':
-		X_austrian = X_austrian.drop(index, axis=0)
+# ##Preprocess geography only CRC PCA
+# for index in X_austrian.index.tolist():
+# 	if ausID[index] == 'control':
+# 		X_austrian = X_austrian.drop(index, axis=0)
 
-Y_austrian = ['Austrian' for x in Y_austrian if x != 'control']
+# Y_austrian = ['Austrian' for x in Y_austrian if x != 'control']
 
-for index in X_italian.index.tolist():
-	if itaID[index] == 'control':
-		X_italian = X_italian.drop(index, axis=0)
+# for index in X_italian.index.tolist():
+# 	if itaID[index] == 'control':
+# 		X_italian = X_italian.drop(index, axis=0)
 
-Y_italian = ['Italian' for x in Y_italian if x != 'control']
+# Y_italian = ['Italian' for x in Y_italian if x != 'control']
 
-for index in X_french.index.tolist():
-	if freID[index] == 'control':
-		X_french = X_french.drop(index, axis=0)
+# for index in X_french.index.tolist():
+# 	if freID[index] == 'control':
+# 		X_french = X_french.drop(index, axis=0)
 
-Y_french = ['French' for x in Y_french if x != 'control']
+# Y_french = ['French' for x in Y_french if x != 'control']
 
-for index in X_german.index.tolist():
-	if gerID[index] == 'control':
-		X_german = X_german.drop(index, axis=0)
+# for index in X_german.index.tolist():
+# 	if gerID[index] == 'control':
+# 		X_german = X_german.drop(index, axis=0)
 
-Y_german = ['German' for x in Y_german if x != 'control']
+# Y_german = ['German' for x in Y_german if x != 'control']
 
-for index in X_chinese.index.tolist():
-	if chiID[index] == 'control':
-		X_chinese = X_chinese.drop(index, axis=0)
+# for index in X_chinese.index.tolist():
+# 	if chiID[index] == 'control':
+# 		X_chinese = X_chinese.drop(index, axis=0)
 
-Y_chinese = ['Chinese' for x in Y_chinese if x != 'control']
+# Y_chinese = ['Chinese' for x in Y_chinese if x != 'control']
 
-for index in X_japanese.index.tolist():
-	if japID[index] == 'Healthy control':
-		X_japanese = X_japanese.drop(index, axis=0)
+# for index in X_japanese.index.tolist():
+# 	if japID[index] == 'Healthy control':
+# 		X_japanese = X_japanese.drop(index, axis=0)
 
-Y_japanese = ['Japanese' for x in Y_japanese if x != 'control']
+# Y_japanese = ['Japanese' for x in Y_japanese if x != 'control']
 
 
 ##ML
@@ -345,13 +345,13 @@ Y_japanese = ['Japanese' for x in Y_japanese if x != 'control']
 # Y_european_eastasian = Y_austrian + Y_italian + Y_chinese + Y_french + Y_german + Y_japanese
 
 #Create East Asian dataset
-# X_eastasian = X_chinese.append([X_japanese])
-# Y_eastasian = Y_chinese + Y_japanese
+X_eastasian = X_chinese.append([X_japanese])
+Y_eastasian = Y_chinese + Y_japanese
 # Y_eastasian = ['East Asian' for x in Y_eastasian]
 
-# # #Create European dataset
-# X_european = X_austrian.append([X_french, X_german, X_italian])
-# Y_european = Y_austrian + Y_french + Y_german + Y_italian
+#Create European dataset
+X_european = X_austrian.append([X_french, X_german, X_italian])
+Y_european = Y_austrian + Y_french + Y_german + Y_italian
 # Y_european = ['European' for x in Y_european]
 
 #Train test split
@@ -365,22 +365,22 @@ ml = ML()
 #ml.logisticRegression(X_eastasian, X_french, Y_eastasian, Y_french)
 
 #Scree plot
-#ml.scree(X_japanese.append(X_chinese))
+#ml.scree(X_eastasian.append(X_european))
 
 #Create diagonal correlation matrix
 #ml.correlationMatrix(X_european_eastasian, Y_european_eastasian)
 
 #PCA
-#ml.pca(X_european_eastasian, Y_european_eastasian)
+#ml.pca(X_eastasian.append(X_european), Y_eastasian + Y_european)
 
 #Geography + disease PCA
 #ml.pca(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
 
 #Geography PCA
-ml.pca(X_japanese.append(X_chinese), Y_japanese+Y_chinese, targets=['Japanese', 'Chinese'], colors=['r','g'])
+#ml.pca(X_japanese.append(X_chinese), Y_japanese+Y_chinese, targets=['Japanese', 'Chinese'], colors=['r','g'])
 
 #TSNE
-#ml.tsne(X_european_eastasian, Y_european_eastasian)
+#ml.tsne(X_eastasian.append(X_european), Y_eastasian + Y_european)
 
 #Geography + disease TSNE
 #ml.tsne(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
