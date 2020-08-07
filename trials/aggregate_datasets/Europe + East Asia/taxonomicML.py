@@ -33,7 +33,7 @@ class ML:
 		#PCA transform
 		pca = PCA(n_components=2)
 		principalComponents = pca.fit_transform(X) #Transform the scaled data onto a new vector space
-		#principalComponents = principalComponents[:, [2,3]]
+		#principalComponents = principalComponents[:, [3,4]]
 		principalDf = pd.DataFrame(data=principalComponents, columns = ['principal component 1', 'principal component 2']) #Create new dataframe with principal components as the data
 
 		principalDf.index = indices
