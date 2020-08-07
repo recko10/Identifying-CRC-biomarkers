@@ -345,13 +345,13 @@ gerID = idToTarget
 # Y_european_eastasian = Y_austrian + Y_italian + Y_chinese + Y_french + Y_german + Y_japanese
 
 #Create East Asian dataset
-# X_eastasian = X_chinese.append([X_japanese])
-# Y_eastasian = Y_chinese + Y_japanese
+X_eastasian = X_chinese.append([X_japanese])
+Y_eastasian = Y_chinese + Y_japanese
 # Y_eastasian = ['East Asian' for x in Y_eastasian]
 
-# # #Create European dataset
-# X_european = X_austrian.append([X_french, X_german, X_italian])
-# Y_european = Y_austrian + Y_french + Y_german + Y_italian
+#Create European dataset
+X_european = X_austrian.append([X_french, X_german, X_italian])
+Y_european = Y_austrian + Y_french + Y_german + Y_italian
 # Y_european = ['European' for x in Y_european]
 
 #Train test split
@@ -365,22 +365,22 @@ ml = ML()
 #ml.logisticRegression(X_eastasian, X_french, Y_eastasian, Y_french)
 
 #Scree plot
-#ml.scree(X_japanese.append(X_chinese))
+#ml.scree(X_eastasian.append(X_european))
 
 #Create diagonal correlation matrix
 #ml.correlationMatrix(X_european_eastasian, Y_european_eastasian)
 
 #PCA
-#ml.pca(X_european_eastasian, Y_european_eastasian)
+#ml.pca(X_eastasian.append(X_european), Y_eastasian + Y_european)
 
 #Geography + disease PCA
 #ml.pca(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
 
 #Geography PCA
-ml.pca(X_japanese.append(X_chinese), Y_japanese+Y_chinese, targets=['Japanese', 'Chinese'], colors=['r','g'])
+#ml.pca(X_japanese.append(X_chinese), Y_japanese+Y_chinese, targets=['Japanese', 'Chinese'], colors=['r','g'])
 
 #TSNE
-#ml.tsne(X_european_eastasian, Y_european_eastasian)
+#ml.tsne(X_eastasian.append(X_european), Y_eastasian + Y_european)
 
 #Geography + disease TSNE
 #ml.tsne(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
