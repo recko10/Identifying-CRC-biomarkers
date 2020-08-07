@@ -300,42 +300,42 @@ gerID = idToTarget
 
 # Y_japanese = ['Japanese' for x in Y_japanese if x != 'CRC']
 
-##Preprocess geography only CRC PCA
-for index in X_austrian.index.tolist():
-	if ausID[index] == 'control':
-		X_austrian = X_austrian.drop(index, axis=0)
+# ##Preprocess geography only CRC PCA
+# for index in X_austrian.index.tolist():
+# 	if ausID[index] == 'control':
+# 		X_austrian = X_austrian.drop(index, axis=0)
 
-Y_austrian = ['Austrian' for x in Y_austrian if x != 'control']
+# Y_austrian = ['Austrian' for x in Y_austrian if x != 'control']
 
-for index in X_italian.index.tolist():
-	if itaID[index] == 'control':
-		X_italian = X_italian.drop(index, axis=0)
+# for index in X_italian.index.tolist():
+# 	if itaID[index] == 'control':
+# 		X_italian = X_italian.drop(index, axis=0)
 
-Y_italian = ['Italian' for x in Y_italian if x != 'control']
+# Y_italian = ['Italian' for x in Y_italian if x != 'control']
 
-for index in X_french.index.tolist():
-	if freID[index] == 'control':
-		X_french = X_french.drop(index, axis=0)
+# for index in X_french.index.tolist():
+# 	if freID[index] == 'control':
+# 		X_french = X_french.drop(index, axis=0)
 
-Y_french = ['French' for x in Y_french if x != 'control']
+# Y_french = ['French' for x in Y_french if x != 'control']
 
-for index in X_german.index.tolist():
-	if gerID[index] == 'control':
-		X_german = X_german.drop(index, axis=0)
+# for index in X_german.index.tolist():
+# 	if gerID[index] == 'control':
+# 		X_german = X_german.drop(index, axis=0)
 
-Y_german = ['German' for x in Y_german if x != 'control']
+# Y_german = ['German' for x in Y_german if x != 'control']
 
-for index in X_chinese.index.tolist():
-	if chiID[index] == 'control':
-		X_chinese = X_chinese.drop(index, axis=0)
+# for index in X_chinese.index.tolist():
+# 	if chiID[index] == 'control':
+# 		X_chinese = X_chinese.drop(index, axis=0)
 
-Y_chinese = ['Chinese' for x in Y_chinese if x != 'control']
+# Y_chinese = ['Chinese' for x in Y_chinese if x != 'control']
 
-for index in X_japanese.index.tolist():
-	if japID[index] == 'Healthy control':
-		X_japanese = X_japanese.drop(index, axis=0)
+# for index in X_japanese.index.tolist():
+# 	if japID[index] == 'Healthy control':
+# 		X_japanese = X_japanese.drop(index, axis=0)
 
-Y_japanese = ['Japanese' for x in Y_japanese if x != 'control']
+# Y_japanese = ['Japanese' for x in Y_japanese if x != 'control']
 
 
 ##ML
