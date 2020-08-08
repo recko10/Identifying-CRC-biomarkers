@@ -77,6 +77,7 @@ for index in range(len(Y_japanese)):
 		Y_japanese[index] = 'control'
 
 japID = idToTarget
+
 ###Preprocess Austrian
 
 #Preprocess Austrian targets
@@ -98,6 +99,7 @@ for index in X_austrian.index.tolist():
 	Y_austrian.append(idToTarget[index])
 
 ausID = idToTarget
+
 ###Preprocess Chinese
 
 #Preprocess Chinese targets
@@ -140,6 +142,7 @@ for index in X_italian.index.tolist():
 	Y_italian.append(idToTarget[index])
 
 itaID = idToTarget
+
 ##Preprocess just French
 X_french = X_french_german
 
@@ -172,6 +175,7 @@ for index in X_french.index.tolist():
 	Y_french.append(idToTarget[index])
 
 freID = idToTarget
+
 ##Preprocess just German
 X_german = X_french_german
 
@@ -345,19 +349,19 @@ gerID = idToTarget
 # Y_european_eastasian = Y_austrian + Y_italian + Y_chinese + Y_french + Y_german + Y_japanese
 
 #Create East Asian dataset
-X_eastasian = X_chinese.append([X_japanese])
-Y_eastasian = Y_chinese + Y_japanese
+# X_eastasian = X_chinese.append([X_japanese])
+# Y_eastasian = Y_chinese + Y_japanese
 # Y_eastasian = ['East Asian' for x in Y_eastasian]
 
 #Create European dataset
-X_european = X_austrian.append([X_french, X_german, X_italian])
-Y_european = Y_austrian + Y_french + Y_german + Y_italian
+# X_european = X_austrian.append([X_french, X_german, X_italian])
+# Y_european = Y_austrian + Y_french + Y_german + Y_italian
 # Y_european = ['European' for x in Y_european]
 
 #Train test split
 #X_train, X_test, Y_train, Y_test = train_test_split(X_european_eastasian, Y_european_eastasian, test_size=0.33)
 
-#Classifier
+###Classifiers
 ml = ML()
 #ml.randomForest(X_train, X_test, Y_train, Y_test)
 #ml.logisticRegression(X_train, X_test, Y_train, Y_test)
@@ -387,4 +391,18 @@ ml = ML()
 
 #Geography TSNE
 #ml.tsne(X_japanese.append(X_chinese), Y_japanese+Y_chinese, targets=['Japanese', 'Chinese'], colors=['r','g'])
+
+###Create top features df
+japaneseTopFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_japanese, Y_japanese), X_japanese, Y_japanese)
+austrianTopFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_austrian, Y_austrian), X_austrian, Y_austrian)
+italianTopFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_italian, Y_italian), X_italian, Y_italian)
+chineseTopFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_chinese, Y_chinese), X_chinese, Y_chinese)
+frenchTopFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_french, Y_french), X_french, Y_french)
+germanTopFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_german, Y_german), X_german, Y_german)
+
+#Create individual geography dfs with species as headers and purities as datapoints
+
+
+#Append all geography dfs together
+#Create individual geography dfs with species as headers and concentrations as datapoints
 
