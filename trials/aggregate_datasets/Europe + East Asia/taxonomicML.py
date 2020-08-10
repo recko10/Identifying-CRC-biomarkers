@@ -138,7 +138,10 @@ class ML:
 		for feature_list_index in sfm.get_support(indices=True):
 			selectedFeatures.append(headers[feature_list_index])
 
-		return selectedFeatures
+		#Get ranked feature importances by looking at impurities
+		rankedImportances = model.feature_importances_
+
+		return selectedFeatures, rankedImportances
 
 	#Takes a dataframe as input and a list of corresponding targets. Outputs a diagonal correlation matrix with the top features from the dataframe.
 	def correlationMatrix(self, d, Y_train):
