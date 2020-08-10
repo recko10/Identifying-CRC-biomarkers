@@ -395,9 +395,7 @@ ml = ML()
 
 ###Create weights table
 
-#Bacteria: list of weights
-selectedRankedFeatures = {}
-expectedLoop = 1
+
 
 japaneseTopFeatures, japaneseRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_japanese, Y_japanese), X_japanese, Y_japanese)
 austrianTopFeatures, austrianRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_austrian, Y_austrian), X_austrian, Y_austrian)
@@ -406,10 +404,17 @@ chineseTopFeatures, chineseRankedFeatures = ml.selectFromModel(RandomForestClass
 frenchTopFeatures, frenchRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_french, Y_french), X_french, Y_french)
 germanTopFeatures, germanRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_german, Y_german), X_german, Y_german)
 
+
+#Bacteria: list of weights
+selectedRankedFeatures = {}
+expectedLoop = 1
+
+
 #Create bacterial superset in dictionary
 for item in japaneseTopFeatures + austrianTopFeatures + italianTopFeatures + chineseTopFeatures + frenchTopFeatures + germanTopFeatures:
 	if item not in selectedRankedFeatures:
 		selectedRankedFeatures[item] = []
+
 
 #Append to lists
 for item in japaneseTopFeatures:
@@ -420,6 +425,14 @@ for bacteria in selectedRankedFeatures:
 	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
 		selectedRankedFeatures[bacteria].append('NA')
 
+for item in chineseTopFeatures:
+	if item in selectedRankedFeatures:
+		selectedRankedFeatures[item].append(chineseRankedFeatures[X_chinese.columns.tolist().index(item)])
+
+expectedLoop+=1
+for bacteria in selectedRankedFeatures:
+	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
+		selectedRankedFeatures[bacteria].append('NA')
 
 for item in austrianTopFeatures:
 	if item in selectedRankedFeatures:
@@ -434,16 +447,6 @@ for bacteria in selectedRankedFeatures:
 for item in italianTopFeatures:
 	if item in selectedRankedFeatures:
 		selectedRankedFeatures[item].append(italianRankedFeatures[X_italian.columns.tolist().index(item)])
-
-expectedLoop+=1
-for bacteria in selectedRankedFeatures:
-	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
-		selectedRankedFeatures[bacteria].append('NA')
-
-
-for item in chineseTopFeatures:
-	if item in selectedRankedFeatures:
-		selectedRankedFeatures[item].append(chineseRankedFeatures[X_chinese.columns.tolist().index(item)])
 
 expectedLoop+=1
 for bacteria in selectedRankedFeatures:
