@@ -344,19 +344,19 @@ gerID = idToTarget
 
 ##ML
 
-#Create European and East Asian dataset
+# #Create European and East Asian dataset
 # X_european_eastasian = X_austrian.append([X_italian, X_chinese, X_french, X_german, X_japanese])
 # Y_european_eastasian = Y_austrian + Y_italian + Y_chinese + Y_french + Y_german + Y_japanese
 
-#Create East Asian dataset
-# X_eastasian = X_chinese.append([X_japanese])
-# Y_eastasian = Y_chinese + Y_japanese
-# Y_eastasian = ['East Asian' for x in Y_eastasian]
+# #Create East Asian dataset
+X_eastasian = X_chinese.append([X_japanese])
+Y_eastasian = Y_chinese + Y_japanese
+Y_eastasian = ['East Asian' for x in Y_eastasian]
 
-#Create European dataset
-# X_european = X_austrian.append([X_french, X_german, X_italian])
-# Y_european = Y_austrian + Y_french + Y_german + Y_italian
-# Y_european = ['European' for x in Y_european]
+# #Create European dataset
+X_european = X_austrian.append([X_french, X_german, X_italian])
+Y_european = Y_austrian + Y_french + Y_german + Y_italian
+Y_european = ['European' for x in Y_european]
 
 #Train test split
 #X_train, X_test, Y_train, Y_test = train_test_split(X_european_eastasian, Y_european_eastasian, test_size=0.33)
@@ -381,7 +381,7 @@ ml = ML()
 #ml.pca(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
 
 #Geography PCA
-#ml.pca(X_japanese.append(X_chinese), Y_japanese+Y_chinese, targets=['Japanese', 'Chinese'], colors=['r','g'])
+#ml.pca(X_eastasian.append(X_european), Y_eastasian+Y_european, targets=['East Asian', 'European'], colors=['r','g'])
 
 #TSNE
 #ml.tsne(X_eastasian.append(X_european), Y_eastasian + Y_european)
@@ -393,88 +393,93 @@ ml = ML()
 #ml.tsne(X_japanese.append(X_chinese), Y_japanese+Y_chinese, targets=['Japanese', 'Chinese'], colors=['r','g'])
 
 
-###Create weights table
 
 
 
-japaneseTopFeatures, japaneseRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_japanese, Y_japanese), X_japanese, Y_japanese)
-austrianTopFeatures, austrianRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_austrian, Y_austrian), X_austrian, Y_austrian)
-italianTopFeatures, italianRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_italian, Y_italian), X_italian, Y_italian)
-chineseTopFeatures, chineseRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_chinese, Y_chinese), X_chinese, Y_chinese)
-frenchTopFeatures, frenchRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_french, Y_french), X_french, Y_french)
-germanTopFeatures, germanRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_german, Y_german), X_german, Y_german)
 
 
-#Bacteria: list of weights
-selectedRankedFeatures = {}
-expectedLoop = 1
 
 
-#Create bacterial superset in dictionary
-for item in japaneseTopFeatures + austrianTopFeatures + italianTopFeatures + chineseTopFeatures + frenchTopFeatures + germanTopFeatures:
-	if item not in selectedRankedFeatures:
-		selectedRankedFeatures[item] = []
+
+# ###Create weights table
+# japaneseTopFeatures, japaneseRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_japanese, Y_japanese), X_japanese, Y_japanese)
+# austrianTopFeatures, austrianRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_austrian, Y_austrian), X_austrian, Y_austrian)
+# italianTopFeatures, italianRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_italian, Y_italian), X_italian, Y_italian)
+# chineseTopFeatures, chineseRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_chinese, Y_chinese), X_chinese, Y_chinese)
+# frenchTopFeatures, frenchRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_french, Y_french), X_french, Y_french)
+# germanTopFeatures, germanRankedFeatures = ml.selectFromModel(RandomForestClassifier().fit(X_german, Y_german), X_german, Y_german)
 
 
-#Append to lists
-for item in japaneseTopFeatures:
-	if item in selectedRankedFeatures:
-		selectedRankedFeatures[item].append(japaneseRankedFeatures[X_japanese.columns.tolist().index(item)])
-
-for bacteria in selectedRankedFeatures:
-	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
-		selectedRankedFeatures[bacteria].append('NA')
-
-for item in chineseTopFeatures:
-	if item in selectedRankedFeatures:
-		selectedRankedFeatures[item].append(chineseRankedFeatures[X_chinese.columns.tolist().index(item)])
-
-expectedLoop+=1
-for bacteria in selectedRankedFeatures:
-	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
-		selectedRankedFeatures[bacteria].append('NA')
-
-for item in austrianTopFeatures:
-	if item in selectedRankedFeatures:
-		selectedRankedFeatures[item].append(austrianRankedFeatures[X_austrian.columns.tolist().index(item)])
-
-expectedLoop+=1
-for bacteria in selectedRankedFeatures:
-	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
-		selectedRankedFeatures[bacteria].append('NA')
+# #Bacteria: list of weights
+# selectedRankedFeatures = {}
+# expectedLoop = 1
 
 
-for item in italianTopFeatures:
-	if item in selectedRankedFeatures:
-		selectedRankedFeatures[item].append(italianRankedFeatures[X_italian.columns.tolist().index(item)])
-
-expectedLoop+=1
-for bacteria in selectedRankedFeatures:
-	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
-		selectedRankedFeatures[bacteria].append('NA')
-
-for item in frenchTopFeatures:
-	if item in selectedRankedFeatures:
-		selectedRankedFeatures[item].append(frenchRankedFeatures[X_french_german.columns.tolist().index(item)])
-
-expectedLoop+=1
-for bacteria in selectedRankedFeatures:
-	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
-		selectedRankedFeatures[bacteria].append('NA')
+# #Create bacterial superset in dictionary
+# for item in japaneseTopFeatures + austrianTopFeatures + italianTopFeatures + chineseTopFeatures + frenchTopFeatures + germanTopFeatures:
+# 	if item not in selectedRankedFeatures:
+# 		selectedRankedFeatures[item] = []
 
 
-for item in germanTopFeatures:
-	if item in selectedRankedFeatures:
-		selectedRankedFeatures[item].append(germanRankedFeatures[X_german.columns.tolist().index(item)])
+# #Append to lists
+# for item in japaneseTopFeatures:
+# 	if item in selectedRankedFeatures:
+# 		selectedRankedFeatures[item].append(japaneseRankedFeatures[X_japanese.columns.tolist().index(item)])
 
-expectedLoop+=1
-for bacteria in selectedRankedFeatures:
-	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
-		selectedRankedFeatures[bacteria].append('NA')
+# for bacteria in selectedRankedFeatures:
+# 	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
+# 		selectedRankedFeatures[bacteria].append('NA')
 
-#Create table
-weightsDf = pd.DataFrame(selectedRankedFeatures)
-weightsDf.index = ['Japanese', 'Austrian', 'Italian', 'Chinese', 'French', 'German']
-weightsDf =  weightsDf.T
-print(weightsDf)
-weightsDf.to_csv('weights.csv')
+# for item in chineseTopFeatures:
+# 	if item in selectedRankedFeatures:
+# 		selectedRankedFeatures[item].append(chineseRankedFeatures[X_chinese.columns.tolist().index(item)])
+
+# expectedLoop+=1
+# for bacteria in selectedRankedFeatures:
+# 	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
+# 		selectedRankedFeatures[bacteria].append('NA')
+
+# for item in austrianTopFeatures:
+# 	if item in selectedRankedFeatures:
+# 		selectedRankedFeatures[item].append(austrianRankedFeatures[X_austrian.columns.tolist().index(item)])
+
+# expectedLoop+=1
+# for bacteria in selectedRankedFeatures:
+# 	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
+# 		selectedRankedFeatures[bacteria].append('NA')
+
+
+# for item in italianTopFeatures:
+# 	if item in selectedRankedFeatures:
+# 		selectedRankedFeatures[item].append(italianRankedFeatures[X_italian.columns.tolist().index(item)])
+
+# expectedLoop+=1
+# for bacteria in selectedRankedFeatures:
+# 	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
+# 		selectedRankedFeatures[bacteria].append('NA')
+
+# for item in frenchTopFeatures:
+# 	if item in selectedRankedFeatures:
+# 		selectedRankedFeatures[item].append(frenchRankedFeatures[X_french_german.columns.tolist().index(item)])
+
+# expectedLoop+=1
+# for bacteria in selectedRankedFeatures:
+# 	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
+# 		selectedRankedFeatures[bacteria].append('NA')
+
+
+# for item in germanTopFeatures:
+# 	if item in selectedRankedFeatures:
+# 		selectedRankedFeatures[item].append(germanRankedFeatures[X_german.columns.tolist().index(item)])
+
+# expectedLoop+=1
+# for bacteria in selectedRankedFeatures:
+# 	if len(selectedRankedFeatures[bacteria]) < expectedLoop:
+# 		selectedRankedFeatures[bacteria].append('NA')
+
+# #Create table
+# weightsDf = pd.DataFrame(selectedRankedFeatures)
+# weightsDf.index = ['Japanese', 'Austrian', 'Italian', 'Chinese', 'French', 'German']
+# weightsDf =  weightsDf.T
+# print(weightsDf)
+# weightsDf.to_csv('weights.csv')
