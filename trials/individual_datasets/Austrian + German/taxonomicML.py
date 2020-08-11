@@ -20,24 +20,29 @@ from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import classification_report
 from sklearn.manifold import TSNE
 
-
 class ML:
 
 	#Takes as input a features df and a list of corresponding targets
 	def pca(self, X, Y, targets=['CRC','control'], colors=['r','b']):
+		ml = ML()
 
 		#Scale
+		X_prescale = X
 		indices = X.index #Save X inidces to import into principalDf once it is created
 		X = StandardScaler().fit_transform(X) #Scale the data
 
 		#PCA transform
 		pca = PCA(n_components=2)
 		principalComponents = pca.fit_transform(X) #Transform the scaled data onto a new vector space
+		#principalComponents = principalComponents[:, [2,3]]
 		principalDf = pd.DataFrame(data=principalComponents, columns = ['principal component 1', 'principal component 2']) #Create new dataframe with principal components as the data
 
 		principalDf.index = indices
 
 		finalDf = principalDf
+
+		#Generate heatmap to see influence of features on principal components
+		ml.pcaHeatmap(pca, X_prescale, 0.12)
 
 		#Append targets to df before sending it to be plotted
 		finalDf['target'] = Y
@@ -45,8 +50,8 @@ class ML:
 		#Plot the principal components
 		fig = plt.figure(figsize = (8,8))
 		ax = fig.add_subplot(1,1,1) 
-		ax.set_xlabel('Principal Component 1', fontsize = 15)
-		ax.set_ylabel('Principal Component 2', fontsize = 15)
+		ax.set_xlabel('Principal Component 1', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
+		ax.set_ylabel('Principal Component 2', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
 		for target, color in zip(targets,colors):
 		    indicesToKeep = finalDf['target'] == target
 		    ax.scatter(finalDf.loc[indicesToKeep, 'principal component 1']
@@ -56,12 +61,30 @@ class ML:
 		ax.legend(targets)
 		ax.grid()
 		plt.show()
+
 		return principalDf
+
+
+	def pcaHeatmap(self, pca, x, eigenThreshold):
+		map = pd.DataFrame(pca.components_, columns=x.columns)
+		map = map.tail(2) #Always select the last 2 principal components--assuming that the user always PCAs with only the PCs they need
+
+		#Filter out columns with eigenvector components less than a certain threshold
+		for column in map.columns.tolist():
+			if abs(map.at[map.index.tolist()[0], column]) < eigenThreshold and abs(map.at[map.index.tolist()[1], column]) < eigenThreshold:
+				map = map.drop(column, axis=1)
+
+		map = map.T #To make the heatmap easier to read
+		map.columns = [x+1 for x in map.columns]
+		plt.figure(figsize=(12,6))
+		plt.gcf().subplots_adjust(left=0.25)
+		sns.heatmap(map, cmap='coolwarm')
+
 
 	def tsne(self, X, Y, targets=['CRC','control'], colors=['r','b']):
 
 		#Scale
-		indices = X.index #Save X inidces to import into principalDf once it is created
+		indices = X.index #Save X indices to import into principalDf once it is created
 		X = StandardScaler().fit_transform(X) #Scale the data
 
 		#TSNE transform
@@ -137,7 +160,10 @@ class ML:
 		for feature_list_index in sfm.get_support(indices=True):
 			selectedFeatures.append(headers[feature_list_index])
 
-		return selectedFeatures
+		#Get ranked feature importances by looking at impurities
+		rankedImportances = model.feature_importances_
+
+		return selectedFeatures, rankedImportances
 
 	#Takes a dataframe as input and a list of corresponding targets. Outputs a diagonal correlation matrix with the top features from the dataframe.
 	def correlationMatrix(self, d, Y_train):
