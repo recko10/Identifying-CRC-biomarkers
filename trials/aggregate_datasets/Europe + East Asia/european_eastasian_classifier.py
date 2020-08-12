@@ -121,6 +121,7 @@ for index in X_chinese.index.tolist():
 	Y_chinese.append(idToTarget[index])
 
 chiID = idToTarget
+
 ###Preprocess Italian
 
 #Preprocess Italian targets
@@ -248,24 +249,24 @@ gerID = idToTarget
 # for index in range(len(Y_japanese)):
 # 	Y_japanese[index] = Y_japanese[index] + ' Japanese'
 
-# ###Preprocess geography PCA
-# for index in range(len(Y_austrian)):
-# 	Y_austrian[index] = 'Austrian'
+##Preprocess geography PCA
+for index in range(len(Y_austrian)):
+	Y_austrian[index] = 'Austrian'
 
-# for index in range(len(Y_italian)):
-# 	Y_italian[index] = 'Italian'
+for index in range(len(Y_italian)):
+	Y_italian[index] = 'Italian'
 
-# for index in range(len(Y_french)):
-# 	Y_french[index] = 'French'
+for index in range(len(Y_french)):
+	Y_french[index] = 'French'
 
-# for index in range(len(Y_german)):
-# 	Y_german[index] = 'German'
+for index in range(len(Y_german)):
+	Y_german[index] = 'German'
 
-# for index in range(len(Y_chinese)):
-# 	Y_chinese[index] = 'Chinese'
+for index in range(len(Y_chinese)):
+	Y_chinese[index] = 'Chinese'
 
-# for index in range(len(Y_japanese)):
-# 	Y_japanese[index] = 'Japanese'
+for index in range(len(Y_japanese)):
+	Y_japanese[index] = 'Japanese'
 
 # ##Preprocess geography only controls PCA
 # for index in X_austrian.index.tolist():
@@ -351,20 +352,20 @@ gerID = idToTarget
 # #Create East Asian dataset
 X_eastasian = X_chinese.append([X_japanese])
 Y_eastasian = Y_chinese + Y_japanese
-Y_eastasian = ['East Asian' for x in Y_eastasian]
+# Y_eastasian = ['East Asian' for x in Y_eastasian]
 
-# #Create European dataset
-X_european = X_austrian.append([X_french, X_german, X_italian])
-Y_european = Y_austrian + Y_french + Y_german + Y_italian
-Y_european = ['European' for x in Y_european]
+# # #Create European dataset
+# X_european = X_austrian.append([X_french, X_german, X_italian])
+# Y_european = Y_austrian + Y_french + Y_german + Y_italian
+# Y_european = ['European' for x in Y_european]
 
 #Train test split
-#X_train, X_test, Y_train, Y_test = train_test_split(X_european_eastasian, Y_european_eastasian, test_size=0.33)
+#X_train, X_test, Y_train, Y_test = train_test_split(X_european, Y_european, test_size=0.33)
 
 ###Classifiers
 ml = ML()
-#ml.randomForest(X_train, X_test, Y_train, Y_test)
-#ml.logisticRegression(X_train, X_test, Y_train, Y_test)
+#ml.randomForest(X_eastasian, X_french, Y_eastasian, Y_french, multi_class=False, targetNames=['Austrian', 'French', 'German', 'Italian'])
+#ml.logisticRegression(X_train, X_test, Y_train, Y_test, multi_class=True, targetNames=['Austrian', 'French', 'German', 'Italian'])
 #ml.randomForest(X_eastasian, X_french, Y_eastasian, Y_french)
 #ml.logisticRegression(X_eastasian, X_french, Y_eastasian, Y_french)
 

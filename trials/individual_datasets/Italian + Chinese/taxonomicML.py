@@ -74,7 +74,7 @@ class ML:
 			if abs(map.at[map.index.tolist()[0], column]) < eigenThreshold and abs(map.at[map.index.tolist()[1], column]) < eigenThreshold:
 				map = map.drop(column, axis=1)
 
-		map = map.T #To make the heatmap easier to read
+		map = map.T #Transpose to make the heatmap easier to read
 		map.columns = [x+1 for x in map.columns]
 		plt.figure(figsize=(12,6))
 		plt.gcf().subplots_adjust(left=0.25)
@@ -192,7 +192,7 @@ class ML:
 		ax.figure.subplots_adjust(bottom = 0.3)
 		plt.show()
 
-	def randomForest(self, X_train, X_test, Y_train, Y_test):
+	def randomForest(self, X_train, X_test, Y_train, Y_test, targetNames=['CRC','control'], multi_class=False):
 		ml = ML()
 
 		#Save the pandas dataframe before it gets scaled
@@ -211,18 +211,23 @@ class ML:
 
 		print(f'Accuracy score: {accuracy_score(Y_test,y_pred)}')
 		print(f'Confusion matrix: {confusion_matrix(Y_test,y_pred)}')
-		print(f'AUROC score: {roc_auc_score(Y_test, rf.predict_proba(X_test)[:,1])}\n')
+
+		#Check if the classifcation task has multiple classes
+		if multi_class == True:
+			print(f'AUROC score: {roc_auc_score(Y_test, rf.predict_proba(X_test), multi_class="ovr")}\n')
+		else:
+			print(f'AUROC score: {roc_auc_score(Y_test, rf.predict_proba(X_test)[:,1])}\n')
 
 		#Get top features
-		selectedFeatures = ml.selectFromModel(rf, X_train_prescale, Y_train)
+		selectedFeatures, rankedImportances = ml.selectFromModel(rf, X_train_prescale, Y_train)
 		print(selectedFeatures)
 
 		#Print classification report
-		print(classification_report(Y_test, y_pred, target_names=['CRC','control']))
+		print(classification_report(Y_test, y_pred, target_names=targetNames))
 
 		return y_pred
 
-	def logisticRegression(self, X_train, X_test, Y_train, Y_test):
+	def logisticRegression(self, X_train, X_test, Y_train, Y_test, targetNames=['CRC','control'], multi_class=False):
 		#Scale and create splits
 		X_prescale_train = X_train
 		X_prescale_test = X_test
@@ -243,16 +248,14 @@ class ML:
 
 		print(f'Accuracy score: {accuracy_score(Y_test,y_pred)}')
 		print(f'Confusion matrix: {confusion_matrix(Y_test,y_pred)}')
-		print(f'AUROC score: {roc_auc_score(Y_test, y_pred_roc)}\n')
 
-		ml = ML()
-
-		#Get top features
-		selectedFeatures = ml.selectFromModel(logReg, X_prescale_train, Y_train)
-		print(selectedFeatures)
+		if multi_class == True:
+			print(f'AUROC score: {roc_auc_score(Y_test, logReg.predict_proba(X_test), multi_class="ovr")}\n')
+		else:
+			print(f'AUROC score: {roc_auc_score(Y_test, y_pred_roc)}\n')
 
 		#Print classification report
-		print(classification_report(Y_test, y_pred, target_names=['CRC','control']))
+		print(classification_report(Y_test, y_pred, target_names=targetNames))
 
 		return y_pred
 
