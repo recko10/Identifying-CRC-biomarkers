@@ -192,7 +192,7 @@ class ML:
 		ax.figure.subplots_adjust(bottom = 0.3)
 		plt.show()
 
-	def randomForest(self, X_train, X_test, Y_train, Y_test, targetNames=['control','CRC'], multi_class=False):
+	def randomForest(self, X_train, X_test, Y_train, Y_test, multi_class=False):
 		ml = ML()
 
 		#Save the pandas dataframe before it gets scaled
@@ -223,11 +223,11 @@ class ML:
 		print(selectedFeatures)
 
 		#Print classification report
-		print(classification_report(Y_test, y_pred, target_names=targetNames))
+		print(classification_report(Y_test, y_pred))
 
 		return y_pred
 
-	def logisticRegression(self, X_train, X_test, Y_train, Y_test, targetNames=['control','CRC'], multi_class=False):
+	def logisticRegression(self, X_train, X_test, Y_train, Y_test, multi_class=False):
 		#Scale and create splits
 		X_prescale_train = X_train
 		X_prescale_test = X_test
@@ -255,7 +255,7 @@ class ML:
 			print(f'AUROC score: {roc_auc_score(Y_test, y_pred_roc)}\n')
 
 		#Print classification report
-		print(classification_report(Y_test, y_pred, target_names=targetNames))
+		print(classification_report(Y_test, y_pred))
 
 		return y_pred
 
