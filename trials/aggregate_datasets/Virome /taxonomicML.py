@@ -141,14 +141,14 @@ class ML:
 		leg.get_frame().set_alpha(0.4)
 		plt.show()
 
-	#Selects the top 30 features from a given fitted model
+	#Selects the top 20 features from a given fitted model
 	def selectFromModel(self, model, X_train, Y_train):
 
 		headers = X_train.columns.tolist()
 		selectedFeatures = []
 
 		#Create model
-		sfm = SelectFromModel(estimator=model, max_features=30)
+		sfm = SelectFromModel(estimator=model, max_features=20)
 
 		#Scale the data
 		X_train = StandardScaler().fit_transform(X_train)
@@ -192,7 +192,7 @@ class ML:
 		ax.figure.subplots_adjust(bottom = 0.3)
 		plt.show()
 
-	def randomForest(self, X_train, X_test, Y_train, Y_test, targetNames=['CRC','control'], multi_class=False):
+	def randomForest(self, X_train, X_test, Y_train, Y_test, targetNames=['control','CRC'], multi_class=False):
 		ml = ML()
 
 		#Save the pandas dataframe before it gets scaled
@@ -227,7 +227,7 @@ class ML:
 
 		return y_pred
 
-	def logisticRegression(self, X_train, X_test, Y_train, Y_test, targetNames=['CRC','control'], multi_class=False):
+	def logisticRegression(self, X_train, X_test, Y_train, Y_test, targetNames=['control','CRC'], multi_class=False):
 		#Scale and create splits
 		X_prescale_train = X_train
 		X_prescale_test = X_test
