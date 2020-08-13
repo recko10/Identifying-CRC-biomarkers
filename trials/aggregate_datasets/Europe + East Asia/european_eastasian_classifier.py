@@ -367,7 +367,7 @@ Y_european = Y_austrian + Y_french
 # #This is for balancing the datasets if needed
 # counter=0
 # for index in range(len(X_eastasian.index.tolist())):
-# 	if counter == 60:
+# 	if counter == 70:
 # 		break
 # 	if Y_eastasian[index] == 'CRC':
 # 		X_eastasian = X_eastasian.drop(X_eastasian.index.tolist()[index], axis=0)
@@ -375,14 +375,13 @@ Y_european = Y_austrian + Y_french
 # 		counter+=1
 # 	index+=1
 
+
 ###Classifiers
 ml = ML()
 
-#ml.randomForest(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
-#ml.logisticRegression(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
-
 #ml.randomForest(X_eastasian, X_french, Y_eastasian, Y_french)
 #ml.logisticRegression(X_eastasian, X_french, Y_eastasian, Y_french)
+
 
 #Scree plot
 #ml.scree(X_eastasian.append(X_european))
