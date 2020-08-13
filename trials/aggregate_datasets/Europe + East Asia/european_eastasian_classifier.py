@@ -211,7 +211,7 @@ for index in X_german.index.tolist():
 
 gerID = idToTarget
 
-####MISC PREPROCESSING METHODS BELOW
+####MISC PREPROCESSING METHODS BELOW (uncomment to use)
 
 # ###Preprocess French and German
 # #Preprocess French and German targets
@@ -345,7 +345,7 @@ gerID = idToTarget
 
 #ML
 
-#Create European and East Asian dataset
+#Create European and East Asian aggregate dataset
 # X_european_eastasian = X_austrian.append([X_italian, X_chinese, X_french, X_german, X_japanese])
 # Y_european_eastasian = Y_austrian + Y_italian + Y_chinese + Y_french + Y_german + Y_japanese
 
@@ -360,11 +360,25 @@ Y_european = Y_austrian + Y_french
 # Y_european = ['European' for x in Y_european]
 
 #Train test split
-#X_train, X_test, Y_train, Y_test = train_test_split(X_japanese, Y_japanese, test_size=0.33)
+#X_train, X_test, Y_train, Y_test = train_test_split(X_european.append(X_eastasian), Y_european + Y_eastasian, test_size=0.33)
+
+
+# #Delete a certain number of CRC samples from the training dataset (counter=45 is good for East Asian vs Austrian RF and 60<counter<70 is good for East Asian vs French RF and counter=15 is good for East Asian vs French logistic regression)
+# #This is for balancing the datasets if needed
+# counter=0
+# for index in range(len(X_eastasian.index.tolist())):
+# 	if counter == 45:
+# 		break
+# 	if Y_eastasian[index] == 'CRC':
+# 		X_eastasian = X_eastasian.drop(X_eastasian.index.tolist()[index], axis=0)
+# 		Y_eastasian.pop(index)
+# 		counter+=1
+# 	index+=1
 
 ###Classifiers
 ml = ML()
-#ml.randomForest(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
+
+#ml.randomForest(X_train, X_test, Y_train, Y_test)
 #ml.logisticRegression(X_train, X_test, Y_train, Y_test)
 
 #ml.randomForest(X_eastasian, X_french, Y_eastasian, Y_french)
@@ -395,7 +409,7 @@ ml = ML()
 #ml.tsne(X_japanese.append(X_chinese), Y_japanese+Y_chinese, targets=['Japanese', 'Chinese'], colors=['r','g'])
 
 
-# ###Create weights table
+# ###Create weights table (all code below this)
 
 # #Bacteria: list of weights
 # selectedRankedFeatures = {}

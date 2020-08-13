@@ -141,14 +141,14 @@ class ML:
 		leg.get_frame().set_alpha(0.4)
 		plt.show()
 
-	#Selects the top 30 features from a given fitted model
+	#Selects the top 20 features from a given fitted model
 	def selectFromModel(self, model, X_train, Y_train):
 
 		headers = X_train.columns.tolist()
 		selectedFeatures = []
 
 		#Create model
-		sfm = SelectFromModel(estimator=model, max_features=30)
+		sfm = SelectFromModel(estimator=model, max_features=20)
 
 		#Scale the data
 		X_train = StandardScaler().fit_transform(X_train)

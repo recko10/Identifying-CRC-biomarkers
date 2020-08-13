@@ -141,7 +141,7 @@ class ML:
 		leg.get_frame().set_alpha(0.4)
 		plt.show()
 
-	#Selects the top 30 features from a given fitted model
+	#Selects the top 20 features from a given fitted model
 	def selectFromModel(self, model, X_train, Y_train):
 
 		headers = X_train.columns.tolist()
