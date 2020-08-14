@@ -379,7 +379,7 @@ Y_european = Y_austrian + Y_french
 ###Classifiers
 ml = ML()
 
-#ml.randomForest(X_eastasian, X_french, Y_eastasian, Y_french)
+#ml.randomForest(X_eastasian, X_french_german, Y_eastasian, Y_french)
 #ml.logisticRegression(X_eastasian, X_french, Y_eastasian, Y_french)
 
 
