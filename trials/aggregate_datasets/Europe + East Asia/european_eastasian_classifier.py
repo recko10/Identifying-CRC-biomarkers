@@ -352,12 +352,12 @@ gerID = idToTarget
 # #Create East Asian dataset
 X_eastasian = X_chinese.append([X_japanese])
 Y_eastasian = Y_chinese + Y_japanese
-# Y_eastasian = ['East Asian' for x in Y_eastasian]
+#Y_eastasian = ['East Asian' for x in Y_eastasian]
 
 # #Create European dataset
 X_european = X_austrian.append([X_french])
 Y_european = Y_austrian + Y_french
-# Y_european = ['European' for x in Y_european]
+#Y_european = ['European' for x in Y_european]
 
 #Train test split
 #X_train, X_test, Y_train, Y_test = train_test_split(X_european.append(X_eastasian), Y_european + Y_eastasian, test_size=0.33)
@@ -384,19 +384,19 @@ ml = ML()
 
 
 #Scree plot
-#ml.scree(X_eastasian.append(X_european))
+#ml.scree(X_european)
 
 #Create diagonal correlation matrix
 #ml.correlationMatrix(X_european_eastasian, Y_european_eastasian)
 
 #PCA
-#ml.pca(X_eastasian.append(X_french), Y_eastasian + Y_french)
+ml.pca(X_eastasian.append(X_european), Y_eastasian + Y_european)
 
 #Geography + disease PCA
 #ml.pca(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
 
 #Geography PCA
-#ml.pca(X_eastasian.append(X_european), Y_eastasian+Y_european, targets=['East Asian', 'European'], colors=['r','g'])
+#ml.pca(X_european.append(X_eastasian), Y_european + Y_eastasian, targets=['European', 'East Asian'], colors=['r','g'])
 
 #TSNE
 #ml.tsne(X_eastasian.append(X_european), Y_eastasian + Y_european)
@@ -405,7 +405,7 @@ ml = ML()
 #ml.tsne(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
 
 #Geography TSNE
-#ml.tsne(X_japanese.append(X_chinese), Y_japanese+Y_chinese, targets=['Japanese', 'Chinese'], colors=['r','g'])
+#ml.tsne(X_european, Y_european, targets=['Austrian', 'French'], colors=['r','g'])
 
 
 # ###Create weights table (all code below this)
