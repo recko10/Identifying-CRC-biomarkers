@@ -50,8 +50,8 @@ class ML:
 		#Plot the principal components
 		fig = plt.figure(figsize = (8,8))
 		ax = fig.add_subplot(1,1,1) 
-		ax.set_xlabel('Principal Component 1', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
-		ax.set_ylabel('Principal Component 2', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
+		ax.set_xlabel('Principal Component 3', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
+		ax.set_ylabel('Principal Component 4', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
 		for target, color in zip(targets,colors):
 		    indicesToKeep = finalDf['target'] == target
 		    ax.scatter(finalDf.loc[indicesToKeep, 'principal component 1']
