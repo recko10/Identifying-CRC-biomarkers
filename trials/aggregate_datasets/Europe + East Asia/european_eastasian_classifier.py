@@ -390,7 +390,7 @@ ml = ML()
 #ml.correlationMatrix(X_european_eastasian, Y_european_eastasian)
 
 #PCA
-ml.pca(X_eastasian.append(X_european), Y_eastasian + Y_european)
+#ml.pca(X_eastasian.append(X_european), Y_eastasian + Y_european)
 
 #Geography + disease PCA
 #ml.pca(X_european_eastasian, Y_european_eastasian, targets=['control Japanese', 'CRC Japanese', 'control Chinese', 'CRC Chinese', 'control Italian', 'CRC Italian', 'control Austrian', 'CRC Austrian','control French or German', 'CRC French or German'], colors=['r','b','g','y', 'k','c','m','#894850', '#33FFA8', '#F29A12'])
