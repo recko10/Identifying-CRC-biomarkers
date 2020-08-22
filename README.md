@@ -11,8 +11,6 @@ If one would like to work in an enviornment with all of the data imported and pr
 3) Pass the datasets into the method (if you wanted to use random forest then it would be: randomForest(X_train, X_test, Y_train, Y_test))
 4) Run the code
 
-The randomForest() and logisticRegression() methods I wrote come built in with various accuracy metrics and feature selection processes which are printed to the user.
-
 If you have any questions feel free to PM me.
 
 
