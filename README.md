@@ -2,7 +2,10 @@
 
 All of the tests I ran to support my hypothesis can be found in the "trials" folder. Each trial has its own preprocessing and ML scripts. These scripts come with plenty of analysis and visualization tools baked in already, so there is no need to re-write any of the code I wrote for this project. Please refer to the wiki for a comprehensive understanding of the code.
 
-Quick start:
+# Requirements
+All of the requirements for this project can be satisfied by the base Anaconda distribution. 
+
+# Quick start
 
 If one would like to work in an enviornment with all of the data imported and preprocessed, I recommend working in the "trials/aggregate_datasets/Europe + East Asia/european_eastasian_classifier.py" file. This file contains plenty of pre-written code which can be uncommented and modified depending on what you would like to test. For example, if you wanted to run a classification task where you cross-validate within the Chinese dataset, you would do the following:
 
