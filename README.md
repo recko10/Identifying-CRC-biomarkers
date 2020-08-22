@@ -1,5 +1,4 @@
 # Identifying-CRC-biomarkers
-Performed multiple analyses to show that CRC biomarkers remain consistent across geography and ethnicity despite differing baseline microbiome compositions.
 
 All of the tests I ran to support my hypothesis can be found in the "trials" folder. Each trial has its own preprocessing and ML scripts. These scripts come with plenty of analysis and visualization tools baked in already, so there is no need to re-write any of the code I wrote for this project. Please refer to the docs for a comprehensive understanding of the code.
 
