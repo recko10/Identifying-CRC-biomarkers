@@ -360,8 +360,7 @@ Y_european = Y_austrian + Y_french
 #Y_european = ['European' for x in Y_european]
 
 #Train test split
-#X_train, X_test, Y_train, Y_test = train_test_split(X_european.append(X_eastasian), Y_european + Y_eastasian, test_size=0.33)
-
+#X_train, X_test, Y_train, Y_test = train_test_split(X_eastasian.append(X_european), Y_eastasian + Y_european, test_size=0.33)
 
 # #Delete a certain number of CRC samples from the training dataset (45<counter<60 is good for East Asian vs Austrian RF and counter=23 is good for East Asian vs Austrian logistic regression and 60<counter<70 is good for East Asian vs French RF and counter=15 is good for East Asian vs French logistic regression)
 # #This is for balancing the datasets if needed
@@ -379,9 +378,20 @@ Y_european = Y_austrian + Y_french
 ###Classifiers
 ml = ML()
 
-#ml.randomForest(X_eastasian, X_french_german, Y_eastasian, Y_french)
-#ml.logisticRegression(X_eastasian, X_french, Y_eastasian, Y_french)
+# rf = RandomForestClassifier()
 
+# X_train = StandardScaler().fit_transform(X_train)
+# X_test = StandardScaler().fit_transform(X_test)
+
+# rf.fit(X_train, Y_train)
+# y_pred = rf.predict(X_test)
+
+# print(f'AUROC score: {roc_auc_score(Y_test, rf.predict_proba(X_test)[:,1])}\n')
+
+# print(classification_report(Y_test, y_pred))
+
+#ml.randomForest(X_eastasian, X_french, Y_eastasian, Y_french)
+#ml.logisticRegression(X_eastasian, X_french, Y_eastasian, Y_french)
 
 #Scree plot
 #ml.scree(X_european)

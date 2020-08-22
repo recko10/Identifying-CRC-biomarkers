@@ -19,6 +19,7 @@ from string import ascii_letters
 from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import classification_report
 from sklearn.manifold import TSNE
+import sklearn.metrics as metrics
 
 class ML:
 
@@ -64,7 +65,6 @@ class ML:
 
 		return principalDf
 
-
 	def pcaHeatmap(self, pca, x, eigenThreshold):
 		map = pd.DataFrame(pca.components_, columns=x.columns)
 		map = map.tail(2) #Always select the last 2 principal components--assuming that the user always PCAs with only the PCs they need
@@ -79,7 +79,6 @@ class ML:
 		plt.figure(figsize=(12,6))
 		plt.gcf().subplots_adjust(left=0.25)
 		sns.heatmap(map, cmap='coolwarm')
-
 
 	def tsne(self, X, Y, targets=['CRC','control'], colors=['r','b']):
 
@@ -199,8 +198,8 @@ class ML:
 		X_train_prescale = X_train
 
 		#Scale the data
-		X_train = StandardScaler().fit_transform(X_train)
-		X_test = StandardScaler().fit_transform(X_test)
+		# X_train = StandardScaler().fit_transform(X_train)
+		# X_test = StandardScaler().fit_transform(X_test)
 
 		#Initialize classifier
 		rf = RandomForestClassifier()
