@@ -378,20 +378,8 @@ Y_european = Y_austrian + Y_french
 ###Classifiers
 ml = ML()
 
-# rf = RandomForestClassifier()
-
-# X_train = StandardScaler().fit_transform(X_train)
-# X_test = StandardScaler().fit_transform(X_test)
-
-# rf.fit(X_train, Y_train)
-# y_pred = rf.predict(X_test)
-
-# print(f'AUROC score: {roc_auc_score(Y_test, rf.predict_proba(X_test)[:,1])}\n')
-
-# print(classification_report(Y_test, y_pred))
-
-#ml.randomForest(X_eastasian, X_french, Y_eastasian, Y_french)
-#ml.logisticRegression(X_eastasian, X_french, Y_eastasian, Y_french)
+#ml.randomForest(X_european, X_chinese, Y_european, Y_chinese)
+#ml.logisticRegression(X_european, X_chinese, Y_european, Y_chinese)
 
 #Scree plot
 #ml.scree(X_european)
