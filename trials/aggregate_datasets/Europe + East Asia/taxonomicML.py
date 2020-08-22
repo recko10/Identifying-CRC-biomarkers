@@ -198,8 +198,8 @@ class ML:
 		X_train_prescale = X_train
 
 		#Scale the data
-		X_train = StandardScaler().fit_transform(X_train)
-		X_test = StandardScaler().fit_transform(X_test)
+		# X_train = StandardScaler().fit_transform(X_train)
+		# X_test = StandardScaler().fit_transform(X_test)
 
 		#Initialize classifier
 		rf = RandomForestClassifier()

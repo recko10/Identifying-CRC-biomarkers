@@ -19,6 +19,7 @@ from string import ascii_letters
 from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import classification_report
 from sklearn.manifold import TSNE
+import sklearn.metrics as metrics
 
 class ML:
 
@@ -32,9 +33,9 @@ class ML:
 		X = StandardScaler().fit_transform(X) #Scale the data
 
 		#PCA transform
-		pca = PCA(n_components=2)
+		pca = PCA(n_components=4)
 		principalComponents = pca.fit_transform(X) #Transform the scaled data onto a new vector space
-		#principalComponents = principalComponents[:, [2,3]]
+		principalComponents = principalComponents[:, [2,3]]
 		principalDf = pd.DataFrame(data=principalComponents, columns = ['principal component 1', 'principal component 2']) #Create new dataframe with principal components as the data
 
 		principalDf.index = indices
@@ -50,8 +51,8 @@ class ML:
 		#Plot the principal components
 		fig = plt.figure(figsize = (8,8))
 		ax = fig.add_subplot(1,1,1) 
-		ax.set_xlabel('Principal Component 1', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
-		ax.set_ylabel('Principal Component 2', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
+		ax.set_xlabel('Principal Component 3', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
+		ax.set_ylabel('Principal Component 4', fontsize = 15) ####REMEMBER TO CHANGE THESE WHEN CONSIDERING DIFFERENT PRINCIPAL COMPONENTS
 		for target, color in zip(targets,colors):
 		    indicesToKeep = finalDf['target'] == target
 		    ax.scatter(finalDf.loc[indicesToKeep, 'principal component 1']
@@ -63,7 +64,6 @@ class ML:
 		plt.show()
 
 		return principalDf
-
 
 	def pcaHeatmap(self, pca, x, eigenThreshold):
 		map = pd.DataFrame(pca.components_, columns=x.columns)
@@ -79,7 +79,6 @@ class ML:
 		plt.figure(figsize=(12,6))
 		plt.gcf().subplots_adjust(left=0.25)
 		sns.heatmap(map, cmap='coolwarm')
-
 
 	def tsne(self, X, Y, targets=['CRC','control'], colors=['r','b']):
 
@@ -199,8 +198,8 @@ class ML:
 		X_train_prescale = X_train
 
 		#Scale the data
-		X_train = StandardScaler().fit_transform(X_train)
-		X_test = StandardScaler().fit_transform(X_test)
+		# X_train = StandardScaler().fit_transform(X_train)
+		# X_test = StandardScaler().fit_transform(X_test)
 
 		#Initialize classifier
 		rf = RandomForestClassifier()
