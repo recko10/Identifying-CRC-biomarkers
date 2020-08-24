@@ -303,7 +303,7 @@ gerID = idToTarget
 # 	if japID[index] == 'CRC':
 # 		X_japanese = X_japanese.drop(index, axis=0)
 
-# Y_japanese = ['Japanese' for x in Y_japanese if x != 'CRC']
+#Y_japanese = ['Japanese' for x in Y_japanese if x != 'CRC']
 
 # ##Preprocess geography only CRC PCA
 # for index in X_austrian.index.tolist():
@@ -343,6 +343,16 @@ gerID = idToTarget
 # Y_japanese = ['Japanese' for x in Y_japanese if x != 'control']
 
 
+#Do the sample IDs in the dictionary and their targets match up with the dataframe?
+#X_debug = pd.read_csv('data/FengQ_austrian.tsv', sep='\t') #DEBUG 
+#badSamplesCount = 0
+#for sample in ausID:
+    #if X_debug.at[3, sample] != ausID[sample]:
+        #badSamplesCount+=1
+        #print('TARGET ERROR!!!')
+#print(badSamplesCount)
+
+
 #ML
 
 #Create European and East Asian aggregate dataset
@@ -378,7 +388,7 @@ Y_european = Y_austrian + Y_french
 ###Classifiers
 ml = ML()
 
-#ml.randomForest(X_european, X_chinese, Y_european, Y_chinese)
+#ml.randomForest(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
 #ml.logisticRegression(X_european, X_chinese, Y_european, Y_chinese)
 
 #Scree plot
