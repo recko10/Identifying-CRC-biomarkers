@@ -234,9 +234,10 @@ class ML:
 
 		bacteriaTrain = X_prescale_train.columns.tolist()
 		bacteriaTest = X_prescale_test.columns.tolist()
-
-		X_train = StandardScaler().fit_transform(X_train) #Scale the data
-		X_test= StandardScaler().fit_transform(X_test) #Scale the data
+        
+        #Standardize the data        
+		X_train = StandardScaler().fit_transform(X_train) 
+		X_test = StandardScaler().fit_transform(X_test) 
 
 		#Initialize classifier
 		logReg = LogisticRegression(C=10, max_iter=200)
