@@ -150,8 +150,8 @@ class ML:
 		#Create model
 		sfm = SelectFromModel(estimator=model, max_features=20)
 
-		#Scale the data
-		X_train = StandardScaler().fit_transform(X_train)
+		#Normalize the data
+		X_train = preprocessing.normalize(X_train, norm='l1', axis=0)
 
 		#Train the model to select the features
 		sfm.fit(X_train, Y_train)

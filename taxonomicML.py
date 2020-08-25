@@ -20,6 +20,7 @@ from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import classification_report
 from sklearn.manifold import TSNE
 import sklearn.metrics as metrics
+from sklearn import preprocessing
 
 class ML:
 
@@ -149,8 +150,8 @@ class ML:
 		#Create model
 		sfm = SelectFromModel(estimator=model, max_features=20)
 
-		#Scale the data
-		X_train = StandardScaler().fit_transform(X_train)
+		#Normalize the data
+		X_train = preprocessing.normalize(X_train, norm='l1', axis=0)
 
 		#Train the model to select the features
 		sfm.fit(X_train, Y_train)
@@ -197,9 +198,9 @@ class ML:
 		#Save the pandas dataframe before it gets scaled
 		X_train_prescale = X_train
 
-		#Scale the data
-		# X_train = StandardScaler().fit_transform(X_train)
-		# X_test = StandardScaler().fit_transform(X_test)
+		#Normalize the data
+		X_train = preprocessing.normalize(X_train, norm='l1', axis=0)
+		X_test = preprocessing.normalize(X_test, norm='l1', axis=0)
 
 		#Initialize classifier
 		rf = RandomForestClassifier()
@@ -233,9 +234,10 @@ class ML:
 
 		bacteriaTrain = X_prescale_train.columns.tolist()
 		bacteriaTest = X_prescale_test.columns.tolist()
-
-		X_train = StandardScaler().fit_transform(X_train) #Scale the data
-		X_test= StandardScaler().fit_transform(X_test) #Scale the data
+        
+        #Standardize the data        
+		X_train = StandardScaler().fit_transform(X_train) 
+		X_test = StandardScaler().fit_transform(X_test) 
 
 		#Initialize classifier
 		logReg = LogisticRegression(C=10, max_iter=200)

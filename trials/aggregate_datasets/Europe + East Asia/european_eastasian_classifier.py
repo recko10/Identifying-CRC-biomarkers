@@ -417,11 +417,11 @@ ml = ML()
 #ml.tsne(X_european, Y_european, targets=['Austrian', 'French'], colors=['r','g'])
 
 
-# ###Create weights table (all code below this)
+###Create weights table (all code below this)
 
-# #Bacteria: list of weights
-# selectedRankedFeatures = {}
-# runOnce = False
+#Bacteria: list of weights
+selectedRankedFeatures = {}
+runOnce = False
 
 # #Create the table over 10 iterations
 # for i in range(10):
