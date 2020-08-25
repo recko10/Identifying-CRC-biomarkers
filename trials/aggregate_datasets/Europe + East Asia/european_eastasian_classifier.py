@@ -367,6 +367,8 @@ Y_eastasian = Y_chinese + Y_japanese
 # #Create European dataset
 X_european = X_austrian.append([X_french])
 Y_european = Y_austrian + Y_french
+
+
 #Y_european = ['European' for x in Y_european]
 
 #Train test split
@@ -388,8 +390,8 @@ Y_european = Y_austrian + Y_french
 ###Classifiers
 ml = ML()
 
-#ml.randomForest(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
-#ml.logisticRegression(X_european, X_chinese, Y_european, Y_chinese)
+ml.randomForest(X_eastasian, X_french, Y_eastasian, Y_french)
+#ml.logisticRegression(X_eastasian, X_austrian, Y_eastasian, Y_austrian)
 
 #Scree plot
 #ml.scree(X_european)
