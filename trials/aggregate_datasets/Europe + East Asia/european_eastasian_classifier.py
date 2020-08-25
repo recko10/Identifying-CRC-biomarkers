@@ -372,7 +372,7 @@ Y_european = Y_austrian + Y_french
 #Y_european = ['European' for x in Y_european]
 
 #Train test split
-#X_train, X_test, Y_train, Y_test = train_test_split(X_austrian, Y_austrian, test_size=0.33)
+#X_train, X_test, Y_train, Y_test = train_test_split(X_japanese, Y_japanese, test_size=0.33)
 
 # #Delete a certain number of CRC samples from the training dataset (45<counter<60 is good for East Asian vs Austrian RF and counter=23 is good for East Asian vs Austrian logistic regression and 60<counter<70 is good for East Asian vs French RF and counter=15 is good for East Asian vs French logistic regression)
 # #This is for balancing the datasets if needed
@@ -389,8 +389,7 @@ Y_european = Y_austrian + Y_french
 
 ###Classifiers
 ml = ML()
-
-#ml.randomForest(X_train, X_test, Y_train, Y_test)
+#ml.randomForest(X_eastasian, X_french, Y_eastasian, Y_french)
 #ml.logisticRegression(X_european, X_chinese, Y_european, Y_chinese)
 
 #Scree plot
