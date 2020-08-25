@@ -420,8 +420,8 @@ ml = ML()
 ###Create weights table (all code below this)
 
 #Bacteria: list of weights
-selectedRankedFeatures = {}
-runOnce = False
+# selectedRankedFeatures = {}
+# runOnce = False
 
 # #Create the table over 10 iterations
 # for i in range(10):
