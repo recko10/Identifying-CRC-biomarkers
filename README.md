@@ -1,6 +1,6 @@
 # Identifying-CRC-biomarkers
 
-All of the tests I ran to support my hypothesis can be found in the "trials" folder. Each trial has its own preprocessing and ML scripts. These scripts come with plenty of analysis and visualization tools baked in already, so there is no need to re-write any of the code I wrote for this project. Please refer to the wiki for a comprehensive overview of the code.
+All of the tests I ran to support my hypothesis can be found in the "trials" folder. Each trial has its own preprocessing and ML scripts. Please refer to the wiki for a comprehensive overview of the code.
 
 # Requirements
 All of the requirements for this project can be satisfied by the base Anaconda distribution. 
